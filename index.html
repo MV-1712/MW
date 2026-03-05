@@ -113,7 +113,16 @@ opacity:1;
 .option-btn.unselected{
 opacity:0.4;
 }
+.option-btn.active{
+background:#111;
+color:white;
+border:1px solid #111;
+opacity:1;
+}
 
+.option-btn{
+transition:all 0.2s ease;
+}
 </style>
 
 </head>
@@ -123,7 +132,20 @@ opacity:0.4;
 Mi Tienda
 </header>
 
+<div style="padding:20px;text-align:center;">
+
+    
+<div style="padding:20px;text-align:center;">
+
+<div id="filtrosCategoria"></div>
+<br>
+<div id="filtrosSubcategoria"></div>
+<br>
+<div id="filtrosGenero"></div>
+
+</div>
 <div class="grid" id="catalogo"></div>
+
 
 <div class="modal" id="modal">
 <div class="modal-content">
@@ -164,7 +186,9 @@ const URL_VARIANTES = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/t
 let productos=[];
 let variantes=[];
 let seleccion={};
-
+let filtroCategoria=null;
+let filtroSubcategoria=null;
+let filtroGenero=null;
 function parseCSV(text){
 
 const rows=text.trim().split("\n");
@@ -193,7 +217,102 @@ const v=await fetch(URL_VARIANTES).then(r=>r.text());
 productos=parseCSV(p);
 variantes=parseCSV(v);
 
+crearFiltros();
 renderCatalogo();
+
+}
+
+function crearFiltros(){
+
+const categorias=[...new Set(productos.map(p=>p.Categoria).filter(Boolean))];
+const subcategorias=[...new Set(productos.map(p=>p.Subcategoria).filter(Boolean))];
+const generos=[...new Set(productos.map(p=>p.Genero).filter(Boolean))];
+
+const divCat=document.getElementById("filtrosCategoria");
+const divSub=document.getElementById("filtrosSubcategoria");
+const divGen=document.getElementById("filtrosGenero");
+
+divCat.innerHTML="";
+divSub.innerHTML="";
+divGen.innerHTML="";
+
+let botonesCategoria=[];
+let botonesSubcategoria=[];
+let botonesGenero=[];
+
+function activarBoton(lista, boton){
+    lista.forEach(b=>b.classList.remove("active"));
+    boton.classList.add("active");
+}
+
+function crearBotonTodos(div, lista, setFiltro){
+    const btn=document.createElement("button");
+    btn.innerText="Todos";
+    btn.className="option-btn active";
+
+    btn.onclick=()=>{
+        setFiltro(null);
+        activarBoton(lista, btn);
+        renderCatalogo();
+    };
+
+    div.appendChild(btn);
+    lista.push(btn);
+}
+
+/* CATEGORIA */
+crearBotonTodos(divCat, botonesCategoria, (v)=>filtroCategoria=v);
+
+categorias.forEach(c=>{
+    const btn=document.createElement("button");
+    btn.innerText=c;
+    btn.className="option-btn";
+
+    btn.onclick=()=>{
+        filtroCategoria=c;
+        activarBoton(botonesCategoria, btn);
+        renderCatalogo();
+    };
+
+    divCat.appendChild(btn);
+    botonesCategoria.push(btn);
+});
+
+/* SUBCATEGORIA */
+crearBotonTodos(divSub, botonesSubcategoria, (v)=>filtroSubcategoria=v);
+
+subcategorias.forEach(s=>{
+    const btn=document.createElement("button");
+    btn.innerText=s;
+    btn.className="option-btn";
+
+    btn.onclick=()=>{
+        filtroSubcategoria=s;
+        activarBoton(botonesSubcategoria, btn);
+        renderCatalogo();
+    };
+
+    divSub.appendChild(btn);
+    botonesSubcategoria.push(btn);
+});
+
+/* GENERO */
+crearBotonTodos(divGen, botonesGenero, (v)=>filtroGenero=v);
+
+generos.forEach(g=>{
+    const btn=document.createElement("button");
+    btn.innerText=g;
+    btn.className="option-btn";
+
+    btn.onclick=()=>{
+        filtroGenero=g;
+        activarBoton(botonesGenero, btn);
+        renderCatalogo();
+    };
+
+    divGen.appendChild(btn);
+    botonesGenero.push(btn);
+});
 
 }
 
@@ -202,22 +321,29 @@ function renderCatalogo(){
 const cont=document.getElementById("catalogo");
 cont.innerHTML="";
 
-let disponibles=productos.filter(p=>p.Estado==="Disponible");
-let agotados=productos.filter(p=>p.Estado==="Agotado");
+let lista=productos.filter(p=>{
 
-[...disponibles,...agotados].forEach(p=>{
+let ok=true;
+
+if(filtroCategoria) ok = ok && p.Categoria===filtroCategoria;
+if(filtroSubcategoria) ok = ok && p.Subcategoria===filtroSubcategoria;
+if(filtroGenero) ok = ok && p.Genero===filtroGenero;
+
+return ok;
+
+});
+
+lista.forEach(p=>{
 
 const card=document.createElement("div");
 card.className="card";
-
-if(p.Estado==="Agotado")card.classList.add("agotado");
 
 card.innerHTML=`
 <img src="${p.Imagen}">
 <h3>${p.Nombre}</h3>
 <p>$${p.Precio}</p>
 <button onclick="abrirModal('${p.ID}')">
-${p.Estado==="Agotado"?"Agotado":"Ver producto"}
+Ver producto
 </button>
 `;
 
