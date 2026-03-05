@@ -27,7 +27,6 @@ grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
 gap:20px;
 padding:20px;
 }
-
 .card{
 background:white;
 border-radius:10px;
@@ -168,9 +167,7 @@ VISIONÄR
 <div class="modal-content">
 
 <h2 id="mNombre"></h2>
-
 <img id="mImagen" style="width:100%;border-radius:10px">
-
 <p id="mPrecio"></p>
 <p id="mDescripcion"></p>
 
@@ -178,12 +175,10 @@ VISIONÄR
 <div id="colores"></div>
 
 <div id="seccionTallas"></div>
-
 <br>
 <button id="comprarBtn">Consultar por WhatsApp</button>
 <br><br>
 <button onclick="cerrarModal()">Cerrar</button>
-
 </div>
 </div>
 
@@ -219,11 +214,8 @@ let obj={};
 headers.forEach((h,i)=>{
 obj[h]=values[i]?.replace(/"/g,'').trim();
 });
-
 return obj;
-
 });
-
 }
 
 async function cargarDatos(){
@@ -236,13 +228,9 @@ variantes=parseCSV(v);
 
 crearFiltros();
 renderCatalogo();
-
 }
 
 function crearFiltros(){
-
-
-
 
 const categorias=[...new Set(productos.map(p=>p.Categoria).filter(Boolean))];
 const subcategorias=[...new Set(productos.map(p=>p.Subcategoria).filter(Boolean))];
@@ -283,7 +271,6 @@ function crearBotonTodos(div, lista, setFiltro){
 /* CATEGORIA */
 crearBotonTodos(divCat, botonesCategoria, (v)=>filtroCategoria=v);
 
-
 categorias.forEach(c=>{
     const btn=document.createElement("button");
     btn.innerText=c;
@@ -307,7 +294,6 @@ renderCatalogo();
 /* SUBCATEGORIA */
 crearBotonTodos(divSub, botonesSubcategoria, (v)=>filtroSubcategoria=v);
 
-
 subcategorias.forEach(s=>{
     const btn=document.createElement("button");
     btn.innerText=s;
@@ -330,7 +316,6 @@ renderCatalogo();
 
 /* GENERO */
 crearBotonTodos(divGen, botonesGenero, (v)=>filtroGenero=v);
-
 
 generos.forEach(g=>{
     const btn=document.createElement("button");
@@ -358,9 +343,7 @@ function renderCatalogo(){
 
 const cont=document.getElementById("catalogo");
 cont.innerHTML="";
-
 let lista=productos.filter(p=>{
-
 let ok=true;
 
 if(filtroCategoria)
@@ -368,10 +351,8 @@ if(filtroCategoria)
 
 if(filtroSubcategoria)
     ok = ok && p.Subcategoria?.toLowerCase().trim() === filtroSubcategoria?.toLowerCase().trim();
-
 if(filtroGenero)
     ok = ok && p.Genero?.toLowerCase().trim() === filtroGenero?.toLowerCase().trim();
-
 return ok;
 
 });
@@ -424,15 +405,12 @@ btn.className="option-btn unselected";
 btn.onclick=()=>{
 
 seleccion.color=c;
-
 document.querySelectorAll("#colores .option-btn").forEach(b=>{
 b.classList.remove("selected");
 b.classList.add("unselected");
 });
-
 btn.classList.remove("unselected");
 btn.classList.add("selected");
-
 };
 
 divColores.appendChild(btn);
@@ -444,7 +422,6 @@ const seccionTallas=document.getElementById("seccionTallas");
 seccionTallas.innerHTML="";
 
 if(tallas.length>0){
-
 const titulo=document.createElement("h4");
 titulo.innerText="Talla";
 seccionTallas.appendChild(titulo);
@@ -462,12 +439,9 @@ document.querySelectorAll("#seccionTallas .option-btn").forEach(b=>{
 b.classList.remove("selected");
 b.classList.add("unselected");
 });
-
 btn.classList.remove("unselected");
 btn.classList.add("selected");
-
 };
-
 seccionTallas.appendChild(btn);
 });
 
@@ -478,7 +452,6 @@ seleccion.talla=null;
 document.getElementById("comprarBtn").onclick = () => {
 
 const vars = variantes.filter(v => v.ProductoID === id);
-
 // Verificamos si este producto tiene tallas reales
 const tieneTalla = [...new Set(vars.map(v => v.Talla).filter(t => t && t !== ""))].length > 0;
 
