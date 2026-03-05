@@ -130,7 +130,8 @@ display:flex;
 flex-wrap:nowrap;
 overflow-x:auto;
 gap:8px;
-padding-bottom:5px;
+padding:10px 0;
+justify-content:center;
 }
 @media (max-width: 768px){
 
@@ -240,6 +241,9 @@ renderCatalogo();
 
 function crearFiltros(){
 
+
+
+
 const categorias=[...new Set(productos.map(p=>p.Categoria).filter(Boolean))];
 const subcategorias=[...new Set(productos.map(p=>p.Subcategoria).filter(Boolean))];
 const generos=[...new Set(productos.map(p=>p.Genero).filter(Boolean))];
@@ -279,16 +283,22 @@ function crearBotonTodos(div, lista, setFiltro){
 /* CATEGORIA */
 crearBotonTodos(divCat, botonesCategoria, (v)=>filtroCategoria=v);
 
+
 categorias.forEach(c=>{
     const btn=document.createElement("button");
     btn.innerText=c;
     btn.className="option-btn";
 
-    btn.onclick=()=>{
-        filtroCategoria=c;
-        activarBoton(botonesCategoria, btn);
-        renderCatalogo();
-    };
+ btn.onclick=()=>{
+
+filtroCategoria=c;
+filtroSubcategoria=null;
+filtroGenero=null;
+
+activarBoton(botonesCategoria, btn);
+renderCatalogo();
+
+};
 
     divCat.appendChild(btn);
     botonesCategoria.push(btn);
@@ -297,16 +307,22 @@ categorias.forEach(c=>{
 /* SUBCATEGORIA */
 crearBotonTodos(divSub, botonesSubcategoria, (v)=>filtroSubcategoria=v);
 
+
 subcategorias.forEach(s=>{
     const btn=document.createElement("button");
     btn.innerText=s;
     btn.className="option-btn";
 
-    btn.onclick=()=>{
-        filtroSubcategoria=s;
-        activarBoton(botonesSubcategoria, btn);
-        renderCatalogo();
-    };
+btn.onclick=()=>{
+
+filtroSubcategoria=s;
+filtroCategoria=null;
+filtroGenero=null;
+
+activarBoton(botonesSubcategoria, btn);
+renderCatalogo();
+
+};
 
     divSub.appendChild(btn);
     botonesSubcategoria.push(btn);
@@ -315,16 +331,22 @@ subcategorias.forEach(s=>{
 /* GENERO */
 crearBotonTodos(divGen, botonesGenero, (v)=>filtroGenero=v);
 
+
 generos.forEach(g=>{
     const btn=document.createElement("button");
     btn.innerText=g;
     btn.className="option-btn";
 
-    btn.onclick=()=>{
-        filtroGenero=g;
-        activarBoton(botonesGenero, btn);
-        renderCatalogo();
-    };
+btn.onclick=()=>{
+
+filtroGenero=g;
+filtroCategoria=null;
+filtroSubcategoria=null;
+
+activarBoton(botonesGenero, btn);
+renderCatalogo();
+
+};
 
     divGen.appendChild(btn);
     botonesGenero.push(btn);
@@ -341,9 +363,14 @@ let lista=productos.filter(p=>{
 
 let ok=true;
 
-if(filtroCategoria) ok = ok && p.Categoria===filtroCategoria;
-if(filtroSubcategoria) ok = ok && p.Subcategoria===filtroSubcategoria;
-if(filtroGenero) ok = ok && p.Genero===filtroGenero;
+if(filtroCategoria)
+    ok = ok && p.Categoria?.toLowerCase().trim() === filtroCategoria?.toLowerCase().trim();
+
+if(filtroSubcategoria)
+    ok = ok && p.Subcategoria?.toLowerCase().trim() === filtroSubcategoria?.toLowerCase().trim();
+
+if(filtroGenero)
+    ok = ok && p.Genero?.toLowerCase().trim() === filtroGenero?.toLowerCase().trim();
 
 return ok;
 
