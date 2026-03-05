@@ -186,7 +186,7 @@ Mi Tienda
 </div>
 </div>
 
-<a class="whatsapp-float"
+<a id="whatsappPrincipal" class="whatsapp-float"
 target="_blank"
 href="https://wa.me/593999131523?text=Hola quiero informacion de tus productos">
 WhatsApp
@@ -475,13 +475,14 @@ mensaje += ` Talla ${seleccion.talla}`;
 window.open(`https://wa.me/593999131523?text=${encodeURIComponent(mensaje)}`);
 
 };
-
+document.getElementById("whatsappPrincipal").style.display="none";
 document.getElementById("modal").style.display="flex";
 
 }
 
 function cerrarModal(){
 document.getElementById("modal").style.display="none";
+document.getElementById("whatsappPrincipal").style.display="block";
 }
 
 cargarDatos();
