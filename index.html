@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VISIONÄR</title>
+<title>VISIONAR</title>
 
 <style>
 
@@ -13,12 +13,24 @@ margin:0;
 background:#f4f4f4;
 }
 
-header{
+.header{
 background:#111;
 color:white;
-padding:20px;
-text-align:center;
+height:70px;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:10px;
 font-size:24px;
+}
+.logo{
+height:40px;
+}
+
+.logo-right{
+position:absolute;
+right:10px;
+height:50px;
 }
 
 .grid{
@@ -84,12 +96,22 @@ width:90%;
 }
 
 .option-btn{
-padding:8px 12px;
-margin:5px;
+padding:6px 12px;
+margin:2px;
 border:1px solid #ccc;
 background:white;
 border-radius:5px;
 cursor:pointer;
+white-space:nowrap;
+min-width:70px;
+flex-shrink:0;
+}
+.option-btn:first-child{
+margin-left:auto;
+}
+
+.option-btn:last-child{
+margin-right:auto;
 }
 
 .whatsapp-float{
@@ -128,9 +150,9 @@ transition:all 0.2s ease;
 display:flex;
 flex-wrap:nowrap;
 overflow-x:auto;
-gap:8px;
-padding:10px 0;
-justify-content:center;
+gap:6px;
+padding:4px 0;
+
 }
 @media (max-width: 768px){
 
@@ -145,18 +167,21 @@ grid-template-columns:repeat(2,1fr);
 <body>
 
 <header>
-VISIONÄR
+<header class="header">
+<img src="logo.png" class="logo">
+<span>VISIONÄR</span>
+
 </header>
 
-<div style="padding:20px;text-align:center;">
+<div style="padding:10px;text-align:center;">
 
     
-<div style="padding:20px;text-align:center;">
+<div style="padding:10px;text-align:center;">
 
 <div id="filtrosCategoria"></div>
-<br>
+<div style="height:4px;"></div>
 <div id="filtrosSubcategoria"></div>
-<br>
+<div style="height:4px;"></div>
 <div id="filtrosGenero"></div>
 
 </div>
