@@ -7,7 +7,7 @@
 
     <style>
     .topbar{
-    background:white;
+    background:rgb(244, 243, 243);
     color:black;
     height:40px;
     display:flex;
@@ -28,10 +28,20 @@
     padding:10px 20px;
     }
 
-    .menu{
-    display:flex;
-    gap:25px;
-    }
+   .menu{
+display:flex;
+gap:25px;
+overflow-x:auto;
+white-space:nowrap;
+scroll-behavior:smooth;
+-webkit-overflow-scrolling:touch;
+}
+
+/* ocultar barra de scroll */
+
+.menu::-webkit-scrollbar{
+display:none;
+}
 
     .menu span{
     cursor:pointer;
@@ -49,7 +59,7 @@
     display:flex;
     gap:20px;
     padding:10px 20px;
-    border-bottom:1px solid #ddd;
+    border-bottom:1px solid #110202;
     }
 
     .submenu span{
@@ -142,17 +152,28 @@
     max-width:500px;
     width:90%;
     }
-
+.modal-content{
+position:relative;
+}
+.cerrar-x{
+position:absolute;
+top:10px;
+left:15px;
+font-size:22px;
+cursor:pointer;
+font-weight:bold;
+}
     .option-btn{
     padding:6px 12px;
     margin:2px;
-    border:1px solid #ccc;
-    background:white;
+    border:1px solid #cccccc88;
+    background:rgba(255, 255, 255, 0.629);
     border-radius:5px;
     cursor:pointer;
     white-space:nowrap;
     min-width:70px;
     flex-shrink:0;
+    color:#000000;
     }
     .option-btn:first-child{
     margin-left:auto;
@@ -173,6 +194,17 @@
     text-decoration:none;
     font-weight:bold;
     }
+    .ws-btn{
+background:#25D366;
+color:white;
+padding:14px 20px;
+border:none;
+border-radius:30px;
+font-weight:bold;
+cursor:pointer;
+width:100%;
+font-size:16px;
+}
     .option-btn.selected{
     background:black;
     color:white;
@@ -180,8 +212,10 @@
     }
 
     .option-btn.unselected{
-    opacity:0.4;
-    }
+color:#0f0000;
+border:1px solid #ddd;
+background:#f5f5f5;
+}
     .option-btn.active{
     background:#111;
     color:white;
@@ -242,7 +276,7 @@
 
     <div class="modal" id="modal">
     <div class="modal-content">
-
+<span class="cerrar-x" onclick="cerrarModal()">✕</span>
     <h2 id="mNombre"></h2>
     <img id="mImagen" style="width:100%;border-radius:10px">
     <p id="mPrecio"></p>
@@ -253,9 +287,7 @@
 
     <div id="seccionTallas"></div>
     <br>
-    <button id="comprarBtn">Consultar por WhatsApp</button>
-    <br><br>
-    <button onclick="cerrarModal()">Cerrar</button>
+    <button id="comprarBtn" class="ws-btn">Consultar por WhatsApp</button>
     </div>
     </div>
 
