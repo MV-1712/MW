@@ -146,14 +146,17 @@ display:none;
     }
 
     .modal-content{
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    max-width:500px;
-    width:90%;
-    }
-.modal-content{
 position:relative;
+background:white;
+border-radius:10px;
+
+width:95%;
+max-width:500px;
+
+max-height:90vh;
+overflow-y:auto;
+
+padding:20px;
 }
 .cerrar-x{
 position:absolute;
@@ -469,7 +472,9 @@ menu.appendChild(item);
     }
     function abrirModal(id){
 
-    const producto=productos.find(p=>p.ID===id);
+history.pushState({modal:true}, "");
+
+const producto=productos.find(p=>p.ID===id);
 
     seleccion.producto=producto;
     seleccion.color=null;
@@ -576,6 +581,15 @@ menu.appendChild(item);
     }
 
     cargarDatos();
+    window.addEventListener("popstate", function(){
+
+const modal=document.getElementById("modal");
+
+if(modal.style.display==="flex"){
+cerrarModal();
+}
+
+});
 
     </script>
 
