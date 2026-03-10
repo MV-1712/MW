@@ -281,7 +281,13 @@ background:#f5f5f5;
     <div class="modal-content">
 <span class="cerrar-x" onclick="cerrarModal()">✕</span>
     <h2 id="mNombre"></h2>
-    <img id="mImagen" style="width:100%;border-radius:10px">
+    <div id="galeria">
+
+<img id="mImagen" style="width:100%;border-radius:10px">
+
+<div id="miniaturas" style="display:flex;gap:8px;margin-top:10px;"></div>
+
+</div>
     <p id="mPrecio"></p>
     <p id="mDescripcion"></p>
 
@@ -481,7 +487,39 @@ const producto=productos.find(p=>p.ID===id);
     seleccion.talla=null;
 
     document.getElementById("mNombre").innerText=producto.Nombre;
-    document.getElementById("mImagen").src=producto.Imagen;
+    const imagenPrincipal=document.getElementById("mImagen");
+const miniaturas=document.getElementById("miniaturas");
+
+miniaturas.innerHTML="";
+
+const fotos=[
+producto.Imagen,
+producto.Imagen2,
+producto.Imagen3,
+producto.Imagen4
+].filter(f=>f && f.trim()!=="");
+
+imagenPrincipal.src=fotos[0];
+
+fotos.forEach((foto,i)=>{
+
+const img=document.createElement("img");
+img.src=foto;
+
+img.style.width="60px";
+img.style.height="60px";
+img.style.objectFit="cover";
+img.style.borderRadius="6px";
+img.style.cursor="pointer";
+img.style.border="2px solid transparent";
+
+img.onclick=()=>{
+imagenPrincipal.src=foto;
+};
+
+miniaturas.appendChild(img);
+
+});
     document.getElementById("mPrecio").innerText="$"+producto.Precio;
     document.getElementById("mDescripcion").innerText=producto.Descripcion;
 
