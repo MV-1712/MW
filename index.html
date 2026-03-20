@@ -595,16 +595,23 @@ function finalizarCompra(){
   actualizarCarritoUI();
   cerrarCarrito();
 }
-    function agregarAlCarrito() {
+ function agregarAlCarrito() {
 
-if (!seleccion.color) {
+const vars = variantes.filter(v => v.ProductoID === seleccion.producto.ID);
+
+/* VALIDAR SI EXISTEN COLORES */
+const tieneColor = [...new Set(vars.map(v => v.Color).filter(c => c && c !== ""))].length > 0;
+
+/* VALIDAR SI EXISTEN TALLAS */
+const tieneTalla = [...new Set(vars.map(v => v.Talla).filter(t => t && t !== ""))].length > 0;
+
+/* SOLO EXIGIR COLOR SI EXISTE */
+if (tieneColor && !seleccion.color) {
   alert("Elige color");
   return;
 }
 
-const vars = variantes.filter(v => v.ProductoID === seleccion.producto.ID);
-const tieneTalla = [...new Set(vars.map(v => v.Talla).filter(t => t && t !== ""))].length > 0;
-
+/* SOLO EXIGIR TALLA SI EXISTE */
 if (tieneTalla && !seleccion.talla) {
   alert("Elige talla");
   return;
@@ -614,16 +621,16 @@ const item = {
   id: seleccion.producto.ID,
   nombre: seleccion.producto.Nombre,
   precio: seleccion.producto.Precio,
-  color: seleccion.color,
-  talla: seleccion.talla || "-",
-  imagen: seleccion.producto.Imagen   // 👈 ESTA ES LA CLAVE
+  imagen: seleccion.producto.Imagen, // 🔥 importante para la foto
+  color: seleccion.color || "-",
+  talla: seleccion.talla || "-"
 };
+
 carrito.push(item);
 
 localStorage.setItem("carrito", JSON.stringify(carrito));
 
 actualizarCarritoUI();
-
 
 alert("Producto agregado al carrito 🛒");
 }
