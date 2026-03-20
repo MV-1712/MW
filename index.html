@@ -239,11 +239,27 @@ background:#f5f5f5;
     padding:4px 0;
 
     }
+        #toast{
+position:fixed;
+bottom:30px;
+left:50%;
+transform:translateX(-50%);
+background:#111;
+color:white;
+padding:12px 20px;
+border-radius:25px;
+opacity:0;
+transition:all 0.3s ease;
+z-index:9999;
+font-weight:bold;
+box-shadow:0 4px 10px rgba(0,0,0,0.3);
+}
     @media (max-width: 768px){
 
     .grid{
     grid-template-columns:repeat(2,1fr);
     }
+
 
     }
     </style>
@@ -329,6 +345,7 @@ z-index:999;
     href="https://wa.me/593999131523?text=Hola quiero informacion de tus productos">
     WhatsApp
     </a>
+    <div id="toast"></div>
     <div class="modal" id="modalCarrito">
   <div class="modal-content">
     <span class="cerrar-x" onclick="cerrarCarrito()">✕</span>
@@ -605,15 +622,13 @@ const tieneColor = [...new Set(vars.map(v => v.Color).filter(c => c && c !== "")
 /* VALIDAR SI EXISTEN TALLAS */
 const tieneTalla = [...new Set(vars.map(v => v.Talla).filter(t => t && t !== ""))].length > 0;
 
-/* SOLO EXIGIR COLOR SI EXISTE */
 if (tieneColor && !seleccion.color) {
-  alert("Elige color");
+  mostrarToast("🎨 Elige un color", "error");
   return;
 }
 
-/* SOLO EXIGIR TALLA SI EXISTE */
 if (tieneTalla && !seleccion.talla) {
-  alert("Elige talla");
+  mostrarToast("📏 Elige una talla", "error");
   return;
 }
 
@@ -632,7 +647,7 @@ localStorage.setItem("carrito", JSON.stringify(carrito));
 
 actualizarCarritoUI();
 
-alert("Producto agregado al carrito 🛒");
+mostrarToast("🛒 Producto agregado");
 }
 function actualizarCarritoUI(){
   document.getElementById("carritoCantidad").innerText = carrito.length;
@@ -786,6 +801,26 @@ window.onclick = function(e){
   document.getElementById("modal").style.display="none";
   document.getElementById("whatsappPrincipal").style.display="block";
 }
+function mostrarToast(msg, tipo="ok"){
+
+  const toast = document.getElementById("toast");
+  toast.innerText = msg;
+
+  if(tipo === "error"){
+    toast.style.background = "#e74c3c";
+  } else {
+    toast.style.background = "#111";
+  }
+
+  toast.style.opacity = "1";
+  toast.style.bottom = "50px";
+
+  setTimeout(()=>{
+    toast.style.opacity = "0";
+    toast.style.bottom = "30px";
+  },2000);
+}
+
 actualizarCarritoUI();
 cargarDatos();
 
