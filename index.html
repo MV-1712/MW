@@ -254,6 +254,19 @@ z-index:9999;
 font-weight:bold;
 box-shadow:0 4px 10px rgba(0,0,0,0.3);
 }
+#colores, #seccionTallas{
+  position: relative;
+  z-index: 1;
+}
+
+.ws-btn{
+  position: relative;
+  z-index: 10;
+  cursor: pointer;
+}
+#toast{
+  pointer-events: none;
+}
     @media (max-width: 768px){
 
     .grid{
@@ -333,9 +346,9 @@ z-index:999;
       Agregar al carrito 🛒
     </button>
 
-    <button id="comprarBtn" class="ws-btn" style="margin-top:10px;">
-      Finalizar por WhatsApp
-    </button>
+    <button onclick="comprarPorWhatsApp()" class="ws-btn" style="margin-top:10px;">
+  Finalizar por WhatsApp
+</button>
 
   </div>
 </div>
@@ -762,55 +775,56 @@ miniaturas.appendChild(img);
 
    
 
-document.getElementById("comprarBtn").onclick = () => {
 
-if(carrito.length === 0){
-  alert("Tu carrito está vacío");
-  return;
-}
-
-let mensaje = "Hola quiero comprar:\n\n";
-let total = 0;
-
-carrito.forEach(p => {
-  mensaje += `- ${p.nombre} | Color: ${p.color} | Talla: ${p.talla}\n`;
-  total += parseFloat(p.precio);
-});
-
-mensaje += `\nTotal: $${total}`;
-
-window.open(`https://wa.me/593999131523?text=${encodeURIComponent(mensaje)}`);
-
-/* limpiar carrito */
-carrito = [];
-localStorage.setItem("carrito", JSON.stringify(carrito));
-actualizarCarritoUI();
-
-}; 
-window.onclick = function(e){
-  const modal = document.getElementById("modal");
-  if(e.target === modal){
+document.getElementById("modal").addEventListener("click", function(e){
+  if(e.target === this){
     cerrarModal();
   }
-}
+});
 
 } 
    
+function comprarPorWhatsApp(){
 
-    function cerrarModal(){
+  if(carrito.length === 0){
+    mostrarToast("🛒 Tu carrito está vacío", "error");
+    return;
+  }
+
+  let mensaje = "Hola quiero comprar:\n\n";
+  let total = 0;
+
+  carrito.forEach(p => {
+    mensaje += `- ${p.nombre} | Color: ${p.color} | Talla: ${p.talla}\n`;
+    total += parseFloat(p.precio);
+  });
+
+  mensaje += `\nTotal: $${total}`;
+
+  window.open(`https://wa.me/593999131523?text=${encodeURIComponent(mensaje)}`);
+
+  carrito = [];
+  localStorage.setItem("carrito", JSON.stringify(carrito));
+  actualizarCarritoUI();
+}
+function cerrarModal(){
   document.getElementById("modal").style.display="none";
   document.getElementById("whatsappPrincipal").style.display="block";
+
+  history.replaceState({}, ""); // 🔥 limpia el estado
 }
 function mostrarToast(msg, tipo="ok"){
 
   const toast = document.getElementById("toast");
   toast.innerText = msg;
 
-  if(tipo === "error"){
-    toast.style.background = "#e74c3c";
-  } else {
-    toast.style.background = "#111";
-  }
+if(tipo === "error"){
+  toast.style.background = "#1f1f1f"; // gris elegante
+
+} else {
+  toast.style.background = "#111";
+
+}
 
   toast.style.opacity = "1";
   toast.style.bottom = "50px";
@@ -820,6 +834,16 @@ function mostrarToast(msg, tipo="ok"){
     toast.style.bottom = "30px";
   },2000);
 }
+
+window.onpopstate = function(){
+
+  const modal = document.getElementById("modal");
+
+  if(modal.style.display === "flex"){
+    cerrarModal();
+  }
+
+};
 
 actualizarCarritoUI();
 cargarDatos();
