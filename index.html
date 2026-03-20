@@ -270,6 +270,20 @@ background:#f5f5f5;
 
         
     <div style="padding:10px;text-align:center;">
+       
+<div id="carritoIcono" onclick="abrirCarrito()" style="
+position:fixed;
+top:70px;
+right:20px;
+background:black;
+color:white;
+padding:10px 15px;
+border-radius:30px;
+cursor:pointer;
+z-index:999;
+">
+🛒 <span id="carritoCantidad">0</span>
+</div>
 
 
 
@@ -277,17 +291,18 @@ background:#f5f5f5;
     <div class="grid" id="catalogo"></div>
 
 
-    <div class="modal" id="modal">
-    <div class="modal-content">
-<span class="cerrar-x" onclick="cerrarModal()">✕</span>
+<div class="modal" id="modal">
+  <div class="modal-content">
+
+    <span class="cerrar-x" onclick="cerrarModal()">✕</span>
+
     <h2 id="mNombre"></h2>
+
     <div id="galeria">
+      <img id="mImagen" style="width:100%;border-radius:10px">
+      <div id="miniaturas" style="display:flex;gap:8px;margin-top:10px;"></div>
+    </div>
 
-<img id="mImagen" style="width:100%;border-radius:10px">
-
-<div id="miniaturas" style="display:flex;gap:8px;margin-top:10px;"></div>
-
-</div>
     <p id="mPrecio"></p>
     <p id="mDescripcion"></p>
 
@@ -295,19 +310,43 @@ background:#f5f5f5;
     <div id="colores"></div>
 
     <div id="seccionTallas"></div>
+
     <br>
-    <button id="comprarBtn" class="ws-btn">Consultar por WhatsApp</button>
-    </div>
-    </div>
+
+    <button onclick="agregarAlCarrito()" class="ws-btn">
+      Agregar al carrito 🛒
+    </button>
+
+    <button id="comprarBtn" class="ws-btn" style="margin-top:10px;">
+      Finalizar por WhatsApp
+    </button>
+
+  </div>
+</div>
 
     <a id="whatsappPrincipal" class="whatsapp-float"
     target="_blank"
     href="https://wa.me/593999131523?text=Hola quiero informacion de tus productos">
     WhatsApp
     </a>
+    <div class="modal" id="modalCarrito">
+  <div class="modal-content">
+    <span class="cerrar-x" onclick="cerrarCarrito()">✕</span>
+    <h2>Tu carrito 🛒</h2>
+
+    <div id="listaCarrito"></div>
+
+    <h3 id="totalCarrito"></h3>
+
+    <button onclick="finalizarCompra()" class="ws-btn">
+      Finalizar compra por WhatsApp
+    </button>
+  </div>
+</div>
 
     <script>
 
+let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
     const SHEET_ID = "1iyraS1XHHmAshoeK9p8s5tNUTg-nC3pRw7vHNxut3eU";
 
     const URL_PRODUCTOS = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Productos`;
@@ -476,8 +515,125 @@ menu.appendChild(item);
     });
 
     }
+    function abrirCarrito(){
+  document.getElementById("modalCarrito").style.display = "flex";
+  renderCarrito();
+}
+
+function cerrarCarrito(){
+  document.getElementById("modalCarrito").style.display = "none";
+}
+
+function renderCarrito(){
+
+  const cont = document.getElementById("listaCarrito");
+  cont.innerHTML = "";
+
+  let total = 0;
+
+  carrito.forEach((p, index) => {
+
+    total += parseFloat(p.precio);
+
+   cont.innerHTML += `
+  <div style="display:flex; gap:10px; border-bottom:1px solid #ddd; padding:10px; align-items:center;">
+
+    <img src="${p.imagen}" style="
+      width:60px;
+      height:60px;
+      object-fit:cover;
+      border-radius:6px;
+    ">
+
+    <div style="flex:1;">
+      <b>${p.nombre}</b><br>
+      Color: ${p.color} | Talla: ${p.talla}<br>
+      $${p.precio}
+      <br>
+      <button onclick="eliminarDelCarrito(${index})" style="margin-top:5px;">
+        ❌ Eliminar
+      </button>
+    </div>
+
+  </div>
+`;
+  });
+
+  document.getElementById("totalCarrito").innerText = "Total: $" + total;
+}
+
+function eliminarDelCarrito(index){
+  carrito.splice(index,1);
+
+  localStorage.setItem("carrito", JSON.stringify(carrito));
+
+  actualizarCarritoUI();
+  renderCarrito();
+}
+
+function finalizarCompra(){
+
+  if(carrito.length === 0){
+    alert("Tu carrito está vacío");
+    return;
+  }
+
+  let mensaje = "Hola quiero comprar:\n\n";
+  let total = 0;
+
+  carrito.forEach(p => {
+    mensaje += `- ${p.nombre} | Color: ${p.color} | Talla: ${p.talla}\n`;
+    total += parseFloat(p.precio);
+  });
+
+  mensaje += `\nTotal: $${total}`;
+
+  window.open(`https://wa.me/593999131523?text=${encodeURIComponent(mensaje)}`);
+
+  carrito = [];
+  localStorage.setItem("carrito", JSON.stringify(carrito));
+  actualizarCarritoUI();
+  cerrarCarrito();
+}
+    function agregarAlCarrito() {
+
+if (!seleccion.color) {
+  alert("Elige color");
+  return;
+}
+
+const vars = variantes.filter(v => v.ProductoID === seleccion.producto.ID);
+const tieneTalla = [...new Set(vars.map(v => v.Talla).filter(t => t && t !== ""))].length > 0;
+
+if (tieneTalla && !seleccion.talla) {
+  alert("Elige talla");
+  return;
+}
+
+const item = {
+  id: seleccion.producto.ID,
+  nombre: seleccion.producto.Nombre,
+  precio: seleccion.producto.Precio,
+  color: seleccion.color,
+  talla: seleccion.talla || "-",
+  imagen: seleccion.producto.Imagen   // 👈 ESTA ES LA CLAVE
+};
+carrito.push(item);
+
+localStorage.setItem("carrito", JSON.stringify(carrito));
+
+actualizarCarritoUI();
+
+
+alert("Producto agregado al carrito 🛒");
+}
+function actualizarCarritoUI(){
+  document.getElementById("carritoCantidad").innerText = carrito.length;
+}
     function abrirModal(id){
 
+document.getElementById("modal").style.display = "flex";
+document.getElementById("whatsappPrincipal").style.display = "none";
 history.pushState({modal:true}, "");
 
 const producto=productos.find(p=>p.ID===id);
@@ -582,52 +738,50 @@ miniaturas.appendChild(img);
     seleccion.talla=null;
     }
 
-    document.getElementById("comprarBtn").onclick = () => {
+   
 
-    const vars = variantes.filter(v => v.ProductoID === id);
-    // Verificamos si este producto tiene tallas reales
-    const tieneTalla = [...new Set(vars.map(v => v.Talla).filter(t => t && t !== ""))].length > 0;
+document.getElementById("comprarBtn").onclick = () => {
 
-    if (!seleccion.color) {
-    alert("Elige color");
-    return;
-    }
-
-    // Si el producto tiene talla, entonces es obligatoria
-    if (tieneTalla && !seleccion.talla) {
-    alert("Elige talla");
-    return;
-    }
-
-    let mensaje = `Hola quiero comprar ${producto.Nombre} Color ${seleccion.color}`;
-
-    if (tieneTalla) {
-    mensaje += ` Talla ${seleccion.talla}`;
-    }
-
-    window.open(`https://wa.me/593999131523?text=${encodeURIComponent(mensaje)}`);
-
-    };
-    document.getElementById("whatsappPrincipal").style.display="none";
-    document.getElementById("modal").style.display="flex";
-
-    }
-
-    function cerrarModal(){
-    document.getElementById("modal").style.display="none";
-    document.getElementById("whatsappPrincipal").style.display="block";
-    }
-
-    cargarDatos();
-    window.addEventListener("popstate", function(){
-
-const modal=document.getElementById("modal");
-
-if(modal.style.display==="flex"){
-cerrarModal();
+if(carrito.length === 0){
+  alert("Tu carrito está vacío");
+  return;
 }
 
+let mensaje = "Hola quiero comprar:\n\n";
+let total = 0;
+
+carrito.forEach(p => {
+  mensaje += `- ${p.nombre} | Color: ${p.color} | Talla: ${p.talla}\n`;
+  total += parseFloat(p.precio);
 });
+
+mensaje += `\nTotal: $${total}`;
+
+window.open(`https://wa.me/593999131523?text=${encodeURIComponent(mensaje)}`);
+
+/* limpiar carrito */
+carrito = [];
+localStorage.setItem("carrito", JSON.stringify(carrito));
+actualizarCarritoUI();
+
+}; 
+window.onclick = function(e){
+  const modal = document.getElementById("modal");
+  if(e.target === modal){
+    cerrarModal();
+  }
+}
+
+} 
+   
+
+    function cerrarModal(){
+  document.getElementById("modal").style.display="none";
+  document.getElementById("whatsappPrincipal").style.display="block";
+}
+actualizarCarritoUI();
+cargarDatos();
+
 
     </script>
 
