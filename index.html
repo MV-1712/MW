@@ -98,12 +98,15 @@ display:none;
     padding:20px;
     }
     .card{
-    background:white;
-    border-radius:10px;
-    overflow:hidden;
-    box-shadow:0 4px 10px rgba(0,0,0,0.1);
-    padding-bottom:10px;
-    }
+  background:white;
+  border-radius:10px;
+  overflow:hidden;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+  padding-bottom:10px;
+
+  display:flex;
+  flex-direction:column;
+}
 
     .card img{
     width:100%;
@@ -112,25 +115,29 @@ display:none;
     }
 
     .card h3{
-    margin:10px;
-    font-size:18px;
-    }
+  margin:10px;
+  font-size:18px;
+
+  min-height:44px; /* 🔥 altura fija elegante */
+}
 
     .card p{
     margin:10px;
     font-weight:bold;
     }
 
-    .card button{
-    margin:10px;
-    padding:10px;
-    border:none;
-    background:black;
-    color:white;
-    border-radius:6px;
-    cursor:pointer;
-    width:90%;
-    }
+   .card button{
+  margin:10px;
+  padding:10px;
+  border:none;
+  background:black;
+  color:white;
+  border-radius:6px;
+  cursor:pointer;
+  width:90%;
+
+  margin-top:auto; /* 🔥 ESTE ES EL TRUCO */
+}
 
     .agotado{
     opacity:0.5;
@@ -197,16 +204,22 @@ font-weight:bold;
     text-decoration:none;
     font-weight:bold;
     }
-    .ws-btn{
-background:#25D366;
-color:white;
-padding:14px 20px;
-border:none;
-border-radius:30px;
-font-weight:bold;
-cursor:pointer;
-width:100%;
-font-size:16px;
+   .ws-btn{
+  background:#111; /* negro elegante */
+  color:white;
+  padding:14px 20px;
+  border:none;
+  border-radius:30px;
+  font-weight:bold;
+  cursor:pointer;
+  width:100%;
+  font-size:16px;
+  transition:all 0.2s ease;
+}
+
+/* hover fino */
+.ws-btn:hover{
+  background:#333; /* gris oscuro */
 }
     .option-btn.selected{
     background:black;
@@ -302,7 +315,7 @@ box-shadow:0 4px 10px rgba(0,0,0,0.3);
        
 <div id="carritoIcono" onclick="abrirCarrito()" style="
 position:fixed;
-top:70px;
+top:125px;
 right:20px;
 background:black;
 color:white;
