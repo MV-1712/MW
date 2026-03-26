@@ -7,8 +7,8 @@
 
     <style>
     .topbar{
-    background:rgb(244, 243, 243);
-    color:black;
+    background:rgb(14, 13, 13);
+    color:rgb(255, 255, 255);
     height:40px;
     display:flex;
     align-items:center;
@@ -16,6 +16,29 @@
     font-weight:bold;
     border-bottom:1px solid #ddd;
     }
+       .modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.6);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index: 9999; /* 🔥 ESTO LO ARREGLA */
+}
+
+    .modal-content{
+position:relative;
+background:white;
+border-radius:10px;
+
+width:95%;
+max-width:500px;
+
+max-height:90vh;
+overflow-y:auto;
+
+padding:20px;
+}
 
     /* NAVBAR */
 
@@ -28,13 +51,24 @@
     padding:10px 20px;
     }
 
-   .menu{
-display:flex;
-gap:25px;
-overflow-x:auto;
-white-space:nowrap;
-scroll-behavior:smooth;
--webkit-overflow-scrolling:touch;
+.menu{
+  display:flex;
+  gap:20px;
+  overflow-x:auto;
+  white-space:nowrap;
+  scroll-behavior:smooth;
+  -webkit-overflow-scrolling:touch;
+
+  
+  background:white;
+  padding:4px 10px;
+}
+/* 🔥 cuando hay modal abierto */
+body.modal-abierto .menu,
+body.modal-abierto .submenu,
+body.modal-abierto .navbar,
+body.modal-abierto .topbar{
+  z-index: 1;
 }
 
 /* ocultar barra de scroll */
@@ -92,11 +126,11 @@ display:none;
     }
 
     .grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
-    gap:20px;
-    padding:20px;
-    }
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); /* 🔥 más compactas */
+  gap:10px; /* menos espacio entre productos */
+  padding:10px; /* menos espacio a los lados */
+}
     .card{
   background:white;
   border-radius:10px;
@@ -108,23 +142,27 @@ display:none;
   flex-direction:column;
 }
 
-    .card img{
-    width:100%;
-    height:200px;
-    object-fit:cover;
-    }
+.card img{
+  width:100%;
+  aspect-ratio: 3 / 4; /* 🔥 más alta tipo Shein */
+  object-fit:cover;
+  display:block;
+  
+}
 
-    .card h3{
-  margin:10px;
-  font-size:18px;
-
-  min-height:44px; /* 🔥 altura fija elegante */
+.card h3{
+  margin:12px 10px 6px; /* 🔥 más abajo */
+  font-size:15px;
+  line-height:1.2;
+}
+.card:hover img{
+  transform: scale(1.05);
 }
 
     .card p{
-    margin:10px;
-    font-weight:bold;
-    }
+     margin:0 10px 10px;
+  font-size:14px;
+}
 
    .card button{
   margin:10px;
@@ -142,29 +180,14 @@ display:none;
     .agotado{
     opacity:0.5;
     }
-
-    .modal{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.6);
-    display:none;
-    justify-content:center;
-    align-items:center;
-    }
-
-    .modal-content{
-position:relative;
-background:white;
-border-radius:10px;
-
-width:95%;
-max-width:500px;
-
-max-height:90vh;
-overflow-y:auto;
-
-padding:20px;
+    .card{
+  cursor:pointer;
 }
+.card button{
+  pointer-events:auto;
+}
+
+ 
 .cerrar-x{
 position:absolute;
 top:10px;
@@ -172,6 +195,22 @@ left:15px;
 font-size:22px;
 cursor:pointer;
 font-weight:bold;
+}
+.badge-descuento{
+  position:absolute;
+  top:10px;
+  left:10px;
+
+  background:#ff4d4f; /* 🔥 rojo estilo ecommerce */
+  color:white;
+
+  padding:6px 10px;
+  font-size:14px;
+  font-weight:bold;
+
+  border-radius:12px; /* 🔥 NO cuadrado */
+  
+  box-shadow:0 2px 6px rgba(0,0,0,0.2);
 }
     .option-btn{
     padding:6px 12px;
@@ -280,52 +319,226 @@ box-shadow:0 4px 10px rgba(0,0,0,0.3);
 #toast{
   pointer-events: none;
 }
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  height:30px; /* 🔥 antes 40 */
+  font-size:12px;
+}
+
+
+
+.submenu{
+
+  background:white;
+  padding:6px 10px;
+}
+.header-sticky{
+  position: sticky;
+  top: 30px; /* debajo del topbar */
+  z-index: 1000;
+  background: white;
+   box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+/* 🔥 IMPORTANTE: quitar comportamiento sticky individual */
+.navbar,
+.menu,
+.submenu{
+  position: relative;
+  top: 0;
+}
+.navbar{
+  background:white;
+  display:flex;
+  align-items:center;
+  gap:10px;              /* 🔥 espacio controlado */
+  padding:2px;
+  border-bottom:1px solid #ddd;
+}
+
+.menu-icon{
+  font-size:22px;
+  cursor:pointer;
+  flex:0;
+  color:black; /* 🔥 ESTO LO ARREGLA */
+}
+.icons-right{
+  font-size:18px;
+  cursor:pointer;
+  flex:0; /* 🔥 no crece */
+}
+
+
+
+.search-bar{
+  flex:1; /* 🔥 OCUPA TODO EL ESPACIO */
+  display:flex;
+  align-items:center;
+  background:#f5f5f5;
+  border-radius:20px;
+  padding:8px 12px;
+  height:30px;
+}
+
+#textoBusqueda{
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis; /* 🔥 si es largo → ... */
+  flex:1;
+}
+.search-btn{
+  background:#111;
+  color:white;
+  padding:6px 15px;
+  border-radius:50%;
+}
+
+.icons-right{
+  font-size:18px;
+  cursor:pointer;
+}
+#carritoCantidad{
+  background:red;
+  color:white;
+  border-radius:50%;
+  padding:2px 6px;
+  font-size:12px;
+  margin-left:4px;
+}
+
+.menu-lateral.active{
+  left:0;
+}
+.search-bar input{
+  border:none;
+  background:transparent;
+  outline:none;
+  width:100%;
+  font-size:14px;
+}
+.search-bar{
+  flex:1;
+  min-width:0; /* 🔥 evita que se rompa */
+}
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.4);
+  opacity:0;
+  pointer-events:none;
+  transition:0.3s;
+  z-index:1500;
+}
+
+/* cuando está activo */
+.overlay.active{
+  opacity:1;
+  pointer-events:auto;
+}
+
+/* 🔥 menú lateral mejorado */
+.menu-lateral{
+  position:fixed;
+  top:0;
+  
+  width:260px;
+  height:100%;
+  background:white;
+  box-shadow:2px 0 10px rgba(0,0,0,0.2);
+  padding:20px;
+  transform:translateX(-100%);
+  transition:0.3s;
+  z-index:2000;
+}
+
+/* activo */
+.menu-lateral.active{
+  transform:translateX(0);
+}
+.carrito-modal{
+  position:absolute;
+  top:15px;
+  right:20px;
+  font-size:18px;
+  cursor:pointer;
+}
+
+#carritoCantidadModal{
+  background:red;
+  color:white;
+  border-radius:50%;
+  padding:2px 6px;
+  font-size:12px;
+  margin-left:4px;
+}
+body{
+  margin:0;
+  padding:0;
+}
+.card{
+  border-radius:8px;
+   position:relative;
+}
+
     @media (max-width: 768px){
 
-    .grid{
-    grid-template-columns:repeat(2,1fr);
-    }
+  .grid{
+    grid-template-columns:repeat(2,1fr); /* 2 productos */
+    gap:8px; /* 🔥 más pegados */
+    padding:1px; /* 🔥 menos margen lateral */
+  }
 
-
-    }
+}
     </style>
 
     </head>
     <body>
 
+      <div id="menuLateral" class="menu-lateral">
+       
+  <h3>Más sobre VISIONAR</h3>
+
+  <a href="https://wa.me/593999131523">WhatsApp</a><br><br>
+  <a href="#">Instagram</a><br><br>
+  <a href="#">Facebook</a><br><br>
+  <a href="#">TikTok</a>
+</div>
+ <div id="overlay" class="overlay"></div>
     <div class="topbar">
     <span id="textoRotativo">VISIONAR</span>
     </div>
 
-    <div class="navbar">
+<div class="header-sticky">
 
-    <img src="LOGO.png" class="logo">
+  <div class="navbar">
 
-    <div id="menuCategorias" class="menu"></div>
+  <div class="menu-icon">☰</div>
 
-    </div>
+  <div class="search-bar">
+    <input type="text" id="inputBusqueda" placeholder="Buscar 🔥">
+    <div class="search-btn">🔍</div>
+  </div>
 
-    <div id="submenu" class="submenu"></div>
+  <div class="icons-right" onclick="abrirCarrito()">
+    🛒 <span id="carritoCantidad">0</span>
+  </div>
 
+</div>
+
+  <div id="menuCategorias" class="menu"></div>
+
+  <div id="submenu" class="submenu"></div>
+
+</div>
 
     <div style="padding:10px;text-align:center;">
 
         
     <div style="padding:10px;text-align:center;">
        
-<div id="carritoIcono" onclick="abrirCarrito()" style="
-position:fixed;
-top:125px;
-right:20px;
-background:black;
-color:white;
-padding:10px 15px;
-border-radius:30px;
-cursor:pointer;
-z-index:999;
-">
-🛒 <span id="carritoCantidad">0</span>
-</div>
+
 
 
 
@@ -335,6 +548,16 @@ z-index:999;
 
 <div class="modal" id="modal">
   <div class="modal-content">
+    <div class="carrito-modal" onclick="abrirCarrito()">
+  🛒 <span id="carritoCantidadModal">0</span>
+</div>
+card.innerHTML = `
+  <div class="badge-descuento">-10%</div>
+
+  <img src="${p.Imagen}">
+  <h3>${p.Nombre}</h3>
+  <p>$${p.Precio}</p>
+`;
 
     <span class="cerrar-x" onclick="cerrarModal()">✕</span>
 
@@ -443,11 +666,11 @@ let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
     const v=await fetch(URL_VARIANTES).then(r=>r.text());
 
     productos=parseCSV(p);
-    variantes=parseCSV(v);
+variantes=parseCSV(v);
 
-    crearFiltros();
-    renderCatalogo();
-
+crearFiltros();
+renderCatalogo();
+iniciarBuscador(); // 🔥 AQUÍ EXACTO
     }
     function crearFiltros(){
 
@@ -541,16 +764,15 @@ menu.appendChild(item);
 
     lista.forEach(p=>{
 
-    const card=document.createElement("div");
-    card.className="card";
+   const card=document.createElement("div");
+card.className="card";
+card.onclick = () => abrirModal(p.ID);
 
     card.innerHTML=`
     <img src="${p.Imagen}">
     <h3>${p.Nombre}</h3>
     <p>$${p.Precio}</p>
-    <button onclick="abrirModal('${p.ID}')">
-    Ver producto
-    </button>
+    
     `;
 
     cont.appendChild(card);
@@ -558,13 +780,25 @@ menu.appendChild(item);
     });
 
     }
-    function abrirCarrito(){
+function abrirCarrito(){
   document.getElementById("modalCarrito").style.display = "flex";
+  document.body.classList.add("modal-abierto"); // 🔥 AÑADE ESTO
   renderCarrito();
 }
 
 function cerrarCarrito(){
   document.getElementById("modalCarrito").style.display = "none";
+  document.body.classList.remove("modal-abierto"); // 🔥 AÑADE ESTO
+}
+function actualizarCarritoUI(){
+  const contador = document.getElementById("carritoCantidad");
+  contador.innerText = carrito.length;
+
+  if(carrito.length === 0){
+    contador.style.display = "none";
+  }else{
+    contador.style.display = "inline-block";
+  }
 }
 
 function renderCarrito(){
@@ -679,6 +913,7 @@ function actualizarCarritoUI(){
   document.getElementById("carritoCantidad").innerText = carrito.length;
 }
     function abrirModal(id){
+      document.body.classList.add("modal-abierto");
 
 document.getElementById("modal").style.display = "flex";
 document.getElementById("whatsappPrincipal").style.display = "none";
@@ -789,13 +1024,23 @@ miniaturas.appendChild(img);
    
 
 
-document.getElementById("modal").addEventListener("click", function(e){
-  if(e.target === this){
-    cerrarModal();
-  }
-});
+
 
 } 
+function actualizarCarritoUI(){
+  const c1 = document.getElementById("carritoCantidad");
+  const c2 = document.getElementById("carritoCantidadModal");
+
+  if(c1){
+    c1.innerText = carrito.length;
+    c1.style.display = carrito.length === 0 ? "none" : "inline-block";
+  }
+
+  if(c2){
+    c2.innerText = carrito.length;
+    c2.style.display = carrito.length === 0 ? "none" : "inline-block";
+  }
+}
    
 function comprarPorWhatsApp(){
 
@@ -821,10 +1066,33 @@ function comprarPorWhatsApp(){
   actualizarCarritoUI();
 }
 function cerrarModal(){
+  document.body.classList.remove("modal-abierto");
   document.getElementById("modal").style.display="none";
   document.getElementById("whatsappPrincipal").style.display="block";
 
   history.replaceState({}, ""); // 🔥 limpia el estado
+}
+function renderCatalogoFiltrado(lista){
+
+  const cont=document.getElementById("catalogo");
+  cont.innerHTML="";
+
+  lista.forEach(p=>{
+    const card=document.createElement("div");
+    card.className="card";
+
+    card.innerHTML=`
+      <img src="${p.Imagen}">
+      <h3>${p.Nombre}</h3>
+      <p>$${p.Precio}</p>
+      <button onclick="abrirModal('${p.ID}')">
+      Ver producto
+      </button>
+    `;
+
+    cont.appendChild(card);
+  });
+
 }
 function mostrarToast(msg, tipo="ok"){
 
@@ -848,18 +1116,77 @@ if(tipo === "error"){
   },2000);
 }
 
-window.onpopstate = function(){
+let textosBusqueda = [];
+let indexBusqueda = 0;
 
-  const modal = document.getElementById("modal");
+function iniciarBuscador(){
 
-  if(modal.style.display === "flex"){
-    cerrarModal();
-  }
+  textosBusqueda = [...new Set(productos.map(p=>p.Subcategoria).filter(Boolean))];
 
-};
+  setInterval(()=>{
+
+    indexBusqueda++;
+
+    if(indexBusqueda >= textosBusqueda.length){
+      indexBusqueda = 0;
+    }
+
+   document.getElementById("inputBusqueda").placeholder = textosBusqueda[indexBusqueda];
+
+  },2000);
+}
+
 
 actualizarCarritoUI();
 cargarDatos();
+
+const menu = document.getElementById("menuLateral");
+const overlay = document.getElementById("overlay");
+
+document.querySelector(".menu-icon").onclick = () => {
+  if(menu.classList.contains("active")){
+    menu.classList.remove("active");
+    overlay.classList.remove("active");
+  }else{
+    menu.classList.add("active");
+    overlay.classList.add("active");
+  }
+};
+
+/* cerrar tocando fuera */
+overlay.onclick = () => {
+  menu.classList.remove("active");
+  overlay.classList.remove("active");
+};
+/* 🔥 EFECTO SCROLL NAVBAR */
+window.addEventListener("scroll", ()=>{
+
+  const navbar = document.querySelector(".navbar");
+
+  if(window.scrollY > 10){
+    navbar.style.boxShadow = "0 2px 10px rgba(0,0,0,0.1)";
+  }else{
+    navbar.style.boxShadow = "none";
+  }
+
+});
+/* 🔥 BUSCADOR EN TIEMPO REAL */
+document.getElementById("inputBusqueda").addEventListener("input", function(){
+
+  const valor = this.value.toLowerCase();
+
+  const filtrados = productos.filter(p =>
+    p.Nombre.toLowerCase().includes(valor)
+  );
+
+  renderCatalogoFiltrado(filtrados);
+
+});
+document.getElementById("modal").addEventListener("click", function(e){
+  if(e.target === this){
+    cerrarModal();
+  }
+});
 
 
     </script>
