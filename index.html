@@ -77,11 +77,12 @@ body.modal-abierto .topbar{
 display:none;
 }
 
-    .menu span{
-    cursor:pointer;
-    font-weight:bold;
-    }
 
+  .menu span {
+  cursor: pointer;
+  font-weight: bold;
+  flex: 0 0 auto;      /* 🔥 que los botones no se estiren */
+}
     .menu span:hover{
     opacity:0.7;
     }
@@ -253,8 +254,42 @@ display:none;
   font-size: 14px;
   margin-bottom: 4px;
 }
+.menu {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 10px;
+}
 
- 
+.logo-wrapper {
+  flex: 0 0 auto;  /* 🔥 logo no se mueve */
+}
+
+.logo-categoria {
+  height: 28px;    /* igual altura que los filtros */
+}
+
+.filtros-wrapper {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;          /* permite scroll horizontal */
+  white-space: nowrap;
+  flex: 1 1 auto;            /* ocupa el resto del espacio */
+  scroll-behavior: smooth;
+
+  /* 🔥 ocultar barra de scroll */
+  -ms-overflow-style: none;  /* IE y Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+.filtros-wrapper::-webkit-scrollbar {
+  display: none;             /* Chrome, Safari, Edge */
+}
+.filtros-wrapper span {
+  cursor: pointer;
+  font-weight: bold;
+  flex: 0 0 auto;
+}
+
 .cerrar-x{
 position:absolute;
 top:10px;
@@ -572,6 +607,33 @@ body{
   border-radius:8px;
    position:relative;
 }
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.modal-logo-nombre {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1; /* ocupa espacio entre la X y el carrito */
+  justify-content: center; /* centra logo + título */
+}
+
+.logo-modal {
+  height: 30px; /* ajustar tamaño igual que filtros */
+}
+
+#modalNombreProducto {
+  font-weight: bold;
+  font-size: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
     @media (max-width: 768px){
 
@@ -621,7 +683,14 @@ body{
 
 </div>
 
-  <div id="menuCategorias" class="menu"></div>
+<div id="menuCategorias" class="menu">
+  <div class="logo-wrapper">
+    <img src="logo sin fondo.png" class="logo-categoria" alt="Logo">
+  </div>
+  <div class="filtros-wrapper">
+    <!-- filtros dinámicos -->
+  </div>
+</div>
 
   <div id="submenu" class="submenu"></div>
 
@@ -638,12 +707,25 @@ body{
 
 <div class="modal" id="modal">
   <div class="modal-content">
-    <div class="carrito-modal" onclick="abrirCarrito()">
-  🛒 <span id="carritoCantidadModal">0</span>
-</div>
 
-
+  <div class="modal-header">
+    <!-- Cerrar -->
     <span class="cerrar-x" onclick="cerrarModal()">✕</span>
+
+    <!-- Logo + título -->
+    <div class="modal-logo-nombre">
+      <img src="logo sin fondo.png" class="logo-modal" alt="Logo">
+      <span id="modalNombreProducto">VISIONAR</span>
+    </div>
+
+    <!-- Carrito -->
+    <div class="carrito-modal" onclick="abrirCarrito()">
+      🛒 <span id="carritoCantidadModal">0</span>
+    </div>
+  </div>
+
+
+  
 
     <h2 id="mNombre"></h2>
 
@@ -757,44 +839,31 @@ crearFiltros();
 renderCatalogo();
 iniciarBuscador(); // 🔥 AQUÍ EXACTO
     }
-    function crearFiltros(){
+function crearFiltros() {
+  const categorias = [...new Set(productos.map(p => p.Categoria).filter(Boolean))];
 
-const categorias=[...new Set(productos.map(p=>p.Categoria).filter(Boolean))];
+  const filtrosWrapper = document.querySelector(".filtros-wrapper");
+  filtrosWrapper.innerHTML = "";
 
-const menu=document.getElementById("menuCategorias");
-menu.innerHTML="";
+  // Botón TODOS
+  const todos = document.createElement("span");
+  todos.innerText = "Todos";
+  todos.onclick = () => { 
+    filtroCategoria = null;
+    filtroSubcategoria = null;
+    document.getElementById("submenu").innerHTML = "";
+    renderCatalogo();
+  };
+  filtrosWrapper.appendChild(todos);
 
-/* BOTON TODOS */
-
-const todos=document.createElement("span");
-todos.innerText="Todos";
-
-todos.onclick=()=>{
-filtroCategoria=null;
-filtroSubcategoria=null;
-
-document.getElementById("submenu").innerHTML="";
-renderCatalogo();
-};
-
-menu.appendChild(todos);
-
-/* CATEGORIAS DEL SHEET */
-
-categorias.forEach(c=>{
-
-const item=document.createElement("span");
-item.innerText=c;
-
-item.onclick=()=>mostrarSubcategorias(c);
-
-menu.appendChild(item);
-
-});
-
-}
-
-    function mostrarSubcategorias(categoria){
+  // Categorías
+  categorias.forEach(c => {
+    const item = document.createElement("span");
+    item.innerText = c;
+    item.onclick = () => mostrarSubcategorias(c);
+    filtrosWrapper.appendChild(item);
+  });
+} function mostrarSubcategorias(categoria){
 
     filtroCategoria=categoria;
     filtroSubcategoria=null;
@@ -872,16 +941,27 @@ card.innerHTML = `
     cont.appendChild(card);
   });
 }
-function abrirCarrito(){
-  document.getElementById("modalCarrito").style.display = "flex";
-  document.body.classList.add("modal-abierto"); // 🔥 AÑADE ESTO
-  renderCarrito();
+function abrirCarrito() {
+    document.getElementById("modalCarrito").style.display = "flex";
+    document.getElementById("overlay").classList.add("active"); // 🔥 mostrar overlay
+    document.body.classList.add("modal-abierto"); 
+    renderCarrito();
+    history.pushState({modalCarrito:true}, ""); // 🔥 para manejar botón atrás
 }
 
+
 function cerrarCarrito(){
-  document.getElementById("modalCarrito").style.display = "none";
-  document.body.classList.remove("modal-abierto"); // 🔥 AÑADE ESTO
+    document.getElementById("modalCarrito").style.display = "none";
+    document.getElementById("overlay").classList.remove("active"); // 🔥 ocultar overlay
+    document.body.classList.remove("modal-abierto");
+    history.replaceState({}, ""); // limpia el estado del historial
 }
+document.getElementById("overlay").addEventListener("click", function(e) {
+    const carritoModal = document.getElementById("modalCarrito");
+    if (carritoModal.style.display === "flex") {
+        cerrarCarrito();
+    }
+});
 function actualizarCarritoUI(){
   const contador = document.getElementById("carritoCantidad");
   contador.innerText = carrito.length;
@@ -1307,7 +1387,24 @@ document.getElementById("modal").addEventListener("click", function(e){
     cerrarModal();
   }
 });
-
+// 🔥 Cerrar carrito o modal al tocar afuera
+document.getElementById("overlay").addEventListener("click", () => {
+    // Si el modal del carrito está abierto, cerrarlo
+    if(document.getElementById("modalCarrito").style.display === "flex"){
+        cerrarCarrito();
+    }
+    // Si el modal de producto está abierto, cerrarlo
+    if(document.getElementById("modal").style.display === "flex"){
+        cerrarModal();
+    }
+});
+// Cerrar carrito al hacer clic fuera
+document.getElementById("overlay").addEventListener("click", function(e) {
+    const carritoModal = document.getElementById("modalCarrito");
+    if (carritoModal.style.display === "flex") {
+        cerrarCarrito();
+    }
+});
 
     </script>
 
