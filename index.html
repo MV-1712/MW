@@ -945,7 +945,11 @@ function crearMenuLateral() {
   const cont = document.getElementById("menuCategoriasLateral");
   cont.innerHTML = "";
 
-  const categorias = [...new Set(productos.map(p => p.Categoria).filter(Boolean))];
+  let categorias = [...new Set(productos.map(p => p.Categoria).filter(Boolean))];
+
+// 🔥 FORZAR "Promociones" arriba
+categorias = categorias.filter(c => c !== "Promociones"); // la quitas si existe
+categorias.unshift("Promociones"); // la metes al inicio
 
   categorias.forEach(cat => {
 
@@ -968,12 +972,33 @@ function crearMenuLateral() {
     const subCont = document.createElement("div");
     subCont.className = "subcategorias";
 
-    const subs = [...new Set(
-      productos
-        .filter(p => p.Categoria === cat)
-        .map(p => p.Subcategoria)
-        .filter(Boolean)
-    )];
+   let subs = [];
+
+if(cat === "Promociones"){
+
+  const productosConDescuento = productos.filter(p => {
+    const precioNuevo = parseFloat(p.Precio.replace(/[^0-9.]/g,''));
+    const precioAntiguo = parseFloat((p.PrecioAnterior || '').replace(/[^0-9.]/g,'')) || precioNuevo;
+
+    return precioAntiguo > precioNuevo;
+  });
+
+  subs = [...new Set(
+    productosConDescuento
+      .map(p => p.Subcategoria)
+      .filter(Boolean)
+  )];
+
+}else{
+
+  subs = [...new Set(
+    productos
+      .filter(p => p.Categoria === cat)
+      .map(p => p.Subcategoria)
+      .filter(Boolean)
+  )];
+
+}
 
     subs.forEach(sub => {
       const item = document.createElement("div");
@@ -981,30 +1006,90 @@ function crearMenuLateral() {
       item.innerText = sub;
 
       item.onclick = () => {
-        filtroCategoria = cat;
-        filtroSubcategoria = sub;
-        renderCatalogo();
 
-        // 🔥 cerrar menú automático
-        document.getElementById("menuLateral").classList.remove("active");
-        document.getElementById("overlay").classList.remove("active");
-      };
+  if(cat === "Promociones"){
+
+    const listaPromo = productos.filter(p => {
+      const precioNuevo = parseFloat(p.Precio.replace(/[^0-9.]/g,''));
+      const precioAntiguo = parseFloat((p.PrecioAnterior || '').replace(/[^0-9.]/g,'')) || precioNuevo;
+
+      return precioAntiguo > precioNuevo &&
+             p.Subcategoria === sub;
+    });
+
+    renderCatalogoFiltrado(listaPromo);
+
+  }else{
+    filtroCategoria = cat;
+    filtroSubcategoria = sub;
+    renderCatalogo();
+  }
+
+  document.getElementById("menuLateral").classList.remove("active");
+  document.getElementById("overlay").classList.remove("active");
+};
 
       subCont.appendChild(item);
     });
 
-    titulo.onclick = () => {
-      const abierto = subCont.classList.contains("activo");
+  titulo.onclick = () => {
 
-      // cerrar todos (opcional estilo app)
-      document.querySelectorAll(".subcategorias").forEach(el => el.classList.remove("activo"));
-      document.querySelectorAll(".flecha").forEach(el => el.classList.remove("rotada"));
+  const abierto = subCont.classList.contains("activo");
 
-      if (!abierto) {
-        subCont.classList.add("activo");
-        flecha.classList.add("rotada");
-      }
-    };
+  // cerrar todos
+  document.querySelectorAll(".subcategorias").forEach(el => el.classList.remove("activo"));
+  document.querySelectorAll(".flecha").forEach(el => el.classList.remove("rotada"));
+
+  if (!abierto) {
+
+    // 🔥 SI ES PROMOCIONES → recalcular subcategorías dinámicamente
+    if(cat === "Promociones"){
+
+      const productosConDescuento = productos.filter(p => {
+        const precioNuevo = parseFloat(p.Precio.replace(/[^0-9.]/g,''));
+        const precioAntiguo = parseFloat((p.PrecioAnterior || '').replace(/[^0-9.]/g,'')) || precioNuevo;
+
+        return precioAntiguo > precioNuevo;
+      });
+
+      const subsPromo = [...new Set(
+        productosConDescuento
+          .map(p => p.Subcategoria)
+          .filter(Boolean)
+      )];
+
+      subCont.innerHTML = "";
+
+      subsPromo.forEach(sub => {
+        const item = document.createElement("div");
+        item.className = "sub-item";
+        item.innerText = sub;
+
+        item.onclick = () => {
+
+          const listaPromo = productos.filter(p => {
+            const precioNuevo = parseFloat(p.Precio.replace(/[^0-9.]/g,''));
+            const precioAntiguo = parseFloat((p.PrecioAnterior || '').replace(/[^0-9.]/g,'')) || precioNuevo;
+
+            return precioAntiguo > precioNuevo &&
+                   p.Subcategoria === sub;
+          });
+
+          renderCatalogoFiltrado(listaPromo);
+
+          menu.classList.remove("active");
+          overlay.classList.remove("active");
+        };
+
+        subCont.appendChild(item);
+      });
+    }
+
+    // 🔥 abrir
+    subCont.classList.add("activo");
+    flecha.classList.add("rotada");
+  }
+};
 
     bloque.appendChild(titulo);
     bloque.appendChild(subCont);
@@ -1119,6 +1204,11 @@ window.addEventListener("popstate", function(event) {
         cerrarModal();
         return;
     }
+    if (menu.classList.contains("active")) {
+  menu.classList.remove("active");
+  overlay.classList.remove("active");
+  return;
+}
 
 });
 
@@ -1425,15 +1515,26 @@ function cerrarModal(){
  
 }
 document.getElementById("overlay").addEventListener("click", function() {
-    const carritoModal = document.getElementById("modalCarrito");
-    const modalProducto = document.getElementById("modal");
 
+   
+    const modalProducto = document.getElementById("modal");
+      const carritoModal = document.getElementById("modalCarrito");
+    const menu = document.getElementById("menuLateral");
+
+    // 🔥 cerrar carrito
     if (carritoModal && getComputedStyle(carritoModal).display !== "none") {
         cerrarCarrito();
     }
 
+    // 🔥 cerrar modal producto
     if (modalProducto && getComputedStyle(modalProducto).display !== "none") {
         cerrarModal();
+    }
+
+    // 🔥 NUEVO: cerrar menú lateral
+    if (menu && menu.classList.contains("active")) {
+        menu.classList.remove("active");
+        this.classList.remove("active");
     }
 });
 function renderCatalogoFiltrado(lista) {
