@@ -3,7 +3,7 @@
     <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VISIONAR</title>
+    <title>VISIONARY</title>
 
     <style>
     .topbar{
@@ -635,6 +635,74 @@ body{
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.btn-eliminar{
+  background: transparent;
+  border: none;
+  color: #d82a2a;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-eliminar:hover{
+  background: #f2f2f2;
+  color: #111;
+}
+/* 🔥 MENU PRO */
+
+.menu-cat {
+  border-bottom: 1px solid #eee;
+  padding: 8px 0;
+}
+
+.menu-cat-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 10px 0;
+  transition: all 0.2s ease;
+}
+
+.menu-cat-title:hover {
+  color: #e60023;
+}
+
+.flecha {
+  transition: transform 0.3s ease;
+  font-size: 12px;
+}
+
+.flecha.rotada {
+  transform: rotate(180deg);
+}
+
+.subcategorias {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  padding-left: 10px;
+}
+
+.subcategorias.activo {
+  max-height: 300px; /* suficiente para varias opciones */
+}
+
+.sub-item {
+  padding: 6px 0;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  transition: all 0.2s ease;
+}
+
+.sub-item:hover {
+  color: #e60023;
+  transform: translateX(4px);
+}
 
     @media (max-width: 768px){
 
@@ -650,18 +718,25 @@ body{
     </head>
     <body>
 
-      <div id="menuLateral" class="menu-lateral">
+<div id="menuLateral" class="menu-lateral">
        
-  <h3>Más sobre VISIONAR</h3>
+  <h3>VISIONARY</h3>
+  <div id="menuCategoriasLateral"></div>
+
+  <br>
+
+  <h3>Más sobre VISIONARY</h3>
 
   <a href="https://wa.me/593999131523">WhatsApp</a><br><br>
   <a href="#">Instagram</a><br><br>
   <a href="#">Facebook</a><br><br>
   <a href="#">TikTok</a>
+
 </div>
- <div id="overlay" class="overlay"></div>
+
+<div id="overlay" class="overlay"></div>
     <div class="topbar">
-    <span id="textoRotativo">VISIONAR</span>
+    <span id="textoRotativo">VISIONARY</span>
     </div>
    
 
@@ -716,7 +791,7 @@ body{
     <!-- Logo + título -->
     <div class="modal-logo-nombre">
       <img src="logo sin fondo.png" class="logo-modal" alt="Logo">
-      <span id="modalNombreProducto">VISIONAR</span>
+      <span id="modalNombreProducto">VISIONARY</span>
     </div>
 
     <!-- Carrito -->
@@ -811,7 +886,7 @@ let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
     async function cargarDatos(){
 
     const textos=[
-    "VISIONAR",
+    "VISIONARY",
     "ENVIOS GRATIS DESDE $100",
     "PRENDAS Y TECNOLOGIA"
     ];
@@ -837,8 +912,9 @@ let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 variantes=parseCSV(v);
 
 crearFiltros();
+crearMenuLateral(); // 🔥 AQUI
 renderCatalogo();
-iniciarBuscador(); // 🔥 AQUÍ EXACTO
+iniciarBuscador();
     }
 function crearFiltros() {
   const categorias = [...new Set(productos.map(p => p.Categoria).filter(Boolean))];
@@ -864,7 +940,78 @@ function crearFiltros() {
     item.onclick = () => mostrarSubcategorias(c);
     filtrosWrapper.appendChild(item);
   });
-} function mostrarSubcategorias(categoria){
+} 
+function crearMenuLateral() {
+  const cont = document.getElementById("menuCategoriasLateral");
+  cont.innerHTML = "";
+
+  const categorias = [...new Set(productos.map(p => p.Categoria).filter(Boolean))];
+
+  categorias.forEach(cat => {
+
+    const bloque = document.createElement("div");
+    bloque.className = "menu-cat";
+
+    const titulo = document.createElement("div");
+    titulo.className = "menu-cat-title";
+
+    const texto = document.createElement("span");
+    texto.innerText = cat;
+
+    const flecha = document.createElement("span");
+    flecha.innerText = "▼";
+    flecha.className = "flecha";
+
+    titulo.appendChild(texto);
+    titulo.appendChild(flecha);
+
+    const subCont = document.createElement("div");
+    subCont.className = "subcategorias";
+
+    const subs = [...new Set(
+      productos
+        .filter(p => p.Categoria === cat)
+        .map(p => p.Subcategoria)
+        .filter(Boolean)
+    )];
+
+    subs.forEach(sub => {
+      const item = document.createElement("div");
+      item.className = "sub-item";
+      item.innerText = sub;
+
+      item.onclick = () => {
+        filtroCategoria = cat;
+        filtroSubcategoria = sub;
+        renderCatalogo();
+
+        // 🔥 cerrar menú automático
+        document.getElementById("menuLateral").classList.remove("active");
+        document.getElementById("overlay").classList.remove("active");
+      };
+
+      subCont.appendChild(item);
+    });
+
+    titulo.onclick = () => {
+      const abierto = subCont.classList.contains("activo");
+
+      // cerrar todos (opcional estilo app)
+      document.querySelectorAll(".subcategorias").forEach(el => el.classList.remove("activo"));
+      document.querySelectorAll(".flecha").forEach(el => el.classList.remove("rotada"));
+
+      if (!abierto) {
+        subCont.classList.add("activo");
+        flecha.classList.add("rotada");
+      }
+    };
+
+    bloque.appendChild(titulo);
+    bloque.appendChild(subCont);
+    cont.appendChild(bloque);
+  });
+}
+function mostrarSubcategorias(categoria){
 
     filtroCategoria=categoria;
     filtroSubcategoria=null;
@@ -991,21 +1138,24 @@ function renderCarrito(){
    cont.innerHTML += `
   <div style="display:flex; gap:10px; border-bottom:1px solid #ddd; padding:10px; align-items:center;">
 
-    <img src="${p.imagen}" style="
-      width:60px;
-      height:60px;
-      object-fit:cover;
-      border-radius:6px;
-    ">
+<img src="${p.imagen}" 
+onclick="irAlProductoDesdeCarrito(${index})"
+style="
+  width:60px;
+  height:60px;
+  object-fit:cover;
+  border-radius:6px;
+  cursor:pointer;
+">
 
     <div style="flex:1;">
       <b>${p.nombre}</b><br>
       Color: ${p.color} | Talla: ${p.talla}<br>
       $${p.precio}
       <br>
-      <button onclick="eliminarDelCarrito(${index})" style="margin-top:5px;">
-        ❌ Eliminar
-      </button>
+      <button onclick="eliminarDelCarrito(${index})" class="btn-eliminar">
+  ✕ Eliminar
+</button>
     </div>
 
   </div>
@@ -1022,6 +1172,17 @@ function eliminarDelCarrito(index){
 
   actualizarCarritoUI();
   renderCarrito();
+}
+// 🔥 PÉGALO AQUÍ
+function irAlProductoDesdeCarrito(index){
+
+  const productoCarrito = carrito[index];
+
+  cerrarCarrito();
+
+  setTimeout(()=>{
+    abrirModal(productoCarrito.id);
+  }, 200);
 }
 
 function finalizarCompra(){
