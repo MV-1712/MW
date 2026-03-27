@@ -148,7 +148,9 @@ display:none;
   object-fit:cover;
   display:block;
   
+  
 }
+
 
 .card h3{
   margin:12px 10px 6px; /* 🔥 más abajo */
@@ -162,6 +164,24 @@ display:none;
     .card p{
      margin:0 10px 10px;
   font-size:14px;
+}
+.precio{
+  margin:0 10px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.precio-nuevo{
+  color:#e60023; /* 🔥 rojo ventas */
+  font-weight:bold;
+  font-size:16px;
+}
+
+.precio-antiguo{
+  text-decoration:line-through;
+  color:#999;
+  font-size:13px;
 }
 
    .card button{
@@ -185,6 +205,53 @@ display:none;
 }
 .card button{
   pointer-events:auto;
+}
+
+.precio {
+  display: flex;
+  flex-direction: column; /* para que precio antiguo quede arriba */
+  align-items: flex-start;
+  gap: 2px;
+}
+.precio-antiguo {
+  text-decoration: line-through;
+  color: #999;
+  font-size: 13px;
+}
+.precio-nuevo {
+  color: #e60023; /* rojo */
+  font-weight: bold;
+  font-size: 16px;
+}
+.precio-container {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* espacio entre precio nuevo y antiguo */
+}
+
+.precio-nuevo-rojo {
+  color: #e60023; /* rojo ventas */
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.precio-normal-negro {
+  color: black;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.precio-antiguo-tachado {
+  text-decoration: line-through;
+  color: #999;
+  font-size: 14px;
+}
+
+.descuento-porcentaje {
+  color: #28a745; /* verde */
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 4px;
 }
 
  
@@ -319,6 +386,11 @@ box-shadow:0 4px 10px rgba(0,0,0,0.3);
 #toast{
   pointer-events: none;
 }
+.mini-desc{
+  margin:0 10px 5px;
+  font-size:12px;
+  color:#555;
+}
 .topbar{
   position:sticky;
   top:0;
@@ -326,7 +398,16 @@ box-shadow:0 4px 10px rgba(0,0,0,0.3);
   height:30px; /* 🔥 antes 40 */
   font-size:12px;
 }
+.rating{
+  margin:0 10px 5px;
+  font-size:13px;
+  color:#f5a623;
+}
 
+.rating span{
+  color:#777;
+  font-size:12px;
+}
 
 
 .submenu{
@@ -340,6 +421,16 @@ box-shadow:0 4px 10px rgba(0,0,0,0.3);
   z-index: 1000;
   background: white;
    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+.tag{
+  position:absolute;
+  top:10px;
+  right:10px;
+  background:black;
+  color:white;
+  font-size:11px;
+  padding:4px 8px;
+  border-radius:10px;
 }
 
 /* 🔥 IMPORTANTE: quitar comportamiento sticky individual */
@@ -509,6 +600,7 @@ body{
     <div class="topbar">
     <span id="textoRotativo">VISIONAR</span>
     </div>
+   
 
 <div class="header-sticky">
 
@@ -520,6 +612,8 @@ body{
     <input type="text" id="inputBusqueda" placeholder="Buscar 🔥">
     <div class="search-btn">🔍</div>
   </div>
+  <div class="fav">♡</div>
+  
 
   <div class="icons-right" onclick="abrirCarrito()">
     🛒 <span id="carritoCantidad">0</span>
@@ -533,18 +627,14 @@ body{
 
 </div>
 
-    <div style="padding:10px;text-align:center;">
-
-        
-    <div style="padding:10px;text-align:center;">
-       
-
 
 
 
     </div>
     <div class="grid" id="catalogo"></div>
 
+
+</div>
 
 <div class="modal" id="modal">
   <div class="modal-content">
@@ -582,6 +672,7 @@ body{
 
   </div>
 </div>
+
 
     <a id="whatsappPrincipal" class="whatsapp-float"
     target="_blank"
@@ -737,43 +828,50 @@ menu.appendChild(item);
     renderCatalogo();
 
     }
-    function renderCatalogo(){
+  function renderCatalogo(){
 
-    const cont=document.getElementById("catalogo");
-    cont.innerHTML="";
+  const cont = document.getElementById("catalogo");
+  cont.innerHTML = "";
 
-    let lista=productos.filter(p=>{
-
-    let ok=true;
-
+  let lista = productos.filter(p => {
+    let ok = true;
     if(filtroCategoria)
-    ok = ok && p.Categoria?.toLowerCase().trim() === filtroCategoria?.toLowerCase().trim();
-
+      ok = ok && p.Categoria?.toLowerCase().trim() === filtroCategoria?.toLowerCase().trim();
     if(filtroSubcategoria)
-    ok = ok && p.Subcategoria?.toLowerCase().trim() === filtroSubcategoria?.toLowerCase().trim();
-
+      ok = ok && p.Subcategoria?.toLowerCase().trim() === filtroSubcategoria?.toLowerCase().trim();
     return ok;
+  });
 
-    });
+  lista.forEach(p => {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.style.position = "relative"; // necesario para la etiqueta de descuento
+    card.onclick = () => abrirModal(p.ID);
 
-    lista.forEach(p=>{
+const precioNuevo = parseFloat(p.Precio.replace(/[^0-9.]/g,''));
+const precioAntiguo = parseFloat((p.PrecioAnterior || '').replace(/[^0-9.]/g,'')) || precioNuevo;
+const tieneDescuento = precioAntiguo > precioNuevo;
 
-   const card=document.createElement("div");
-card.className="card";
-card.onclick = () => abrirModal(p.ID);
+let descuentoPorcentaje = 0;
+if(tieneDescuento){
+  descuentoPorcentaje = Math.round(((precioAntiguo - precioNuevo) / precioAntiguo) * 100);
+}
 
-    card.innerHTML=`
-    <img src="${p.Imagen}">
-    <h3>${p.Nombre}</h3>
-    <p>$${p.Precio}</p>
-    
-    `;
+card.innerHTML = `
+  ${tieneDescuento ? `<div class="tag">🔥 HOT</div>` : ""}
+  <img src="${p.Imagen}">
+  <h3>${p.Nombre}</h3>
+  <div class="precio-container" style="display:flex; flex-direction:column; gap:4px;">
+    ${tieneDescuento ? `<span class="descuento-porcentaje">-${descuentoPorcentaje}%</span>` : ""}
+    <div style="display:flex; align-items:center; gap:8px;">
+  <span class="${tieneDescuento ? 'precio-nuevo-rojo' : 'precio-normal-negro'}">$${precioNuevo.toFixed(2)}</span>
+  ${precioAntiguo > precioNuevo ? `<span class="precio-antiguo-tachado">$${precioAntiguo.toFixed(2)}</span>` : ""}
+</div>
+`;
 
     cont.appendChild(card);
-
-    });
-
-    }
+  });
+}
 function abrirCarrito(){
   document.getElementById("modalCarrito").style.display = "flex";
   document.body.classList.add("modal-abierto"); // 🔥 AÑADE ESTO
@@ -953,7 +1051,24 @@ imagenPrincipal.src=foto;
 miniaturas.appendChild(img);
 
 });
-    document.getElementById("mPrecio").innerText="$"+producto.Precio;
+ // 🔥 AQUI PONES EL BLOQUE NUEVO DEL PRECIO
+  const precioNuevo = parseFloat(producto.Precio.replace(/[^0-9.]/g,'')); 
+  const precioAntiguo = parseFloat((producto.PrecioAnterior || '').replace(/[^0-9.]/g,'')) || precioNuevo;
+  let descuentoPorcentaje = 0;
+  if(precioAntiguo > precioNuevo){
+    descuentoPorcentaje = Math.round(((precioAntiguo - precioNuevo) / precioAntiguo) * 100);
+  }
+
+document.getElementById("mPrecio").innerHTML = `
+  ${descuentoPorcentaje > 0 ? `<div class="descuento-porcentaje">-${descuentoPorcentaje}%</div>` : ""}
+  <div class="precio-container">
+    <span class="${descuentoPorcentaje > 0 ? 'precio-nuevo-rojo' : 'precio-normal-negro'}">$${precioNuevo.toFixed(2)}</span>
+    ${precioAntiguo > precioNuevo ? `<span class="precio-antiguo-tachado">$${precioAntiguo.toFixed(2)}</span>` : ""}
+  </div>
+`;
+    document.getElementById("mDescripcion").innerText = producto.Descripcion;
+
+  
     document.getElementById("mDescripcion").innerText=producto.Descripcion;
 
     const vars=variantes.filter(v=>v.ProductoID===id);
@@ -1071,21 +1186,32 @@ function renderCatalogoFiltrado(lista){
   const cont=document.getElementById("catalogo");
   cont.innerHTML="";
 
-  lista.forEach(p=>{
-    const card=document.createElement("div");
-    card.className="card";
+lista.forEach(p => {
+  const card = document.createElement("div");
+  card.className = "card";
+  card.onclick = () => abrirModal(p.ID);
 
-    card.innerHTML=`
-      <img src="${p.Imagen}">
-      <h3>${p.Nombre}</h3>
-      <p>$${p.Precio}</p>
-      <button onclick="abrirModal('${p.ID}')">
-      Ver producto
-      </button>
-    `;
+  const precioNuevo = parseFloat(p.Precio);
+  const precioAntiguo = parseFloat(p.PrecioAnterior) || precioNuevo;
+  const tieneDescuento = precioAntiguo > precioNuevo;
 
-    cont.appendChild(card);
-  });
+  let descuentoPorcentaje = 0;
+  if(tieneDescuento){
+    descuentoPorcentaje = Math.round(((precioAntiguo - precioNuevo) / precioAntiguo) * 100);
+  }
+
+  card.innerHTML = `
+    <img src="${p.Imagen}">
+    <h3>${p.Nombre}</h3>
+
+    <div class="precio" style="flex-direction:column; align-items:flex-start; gap:2px;">
+      ${tieneDescuento ? `<span class="precio-antiguo">$${precioAntiguo.toFixed(2)}</span>` : ""}
+      <span class="precio-nuevo">$${precioNuevo.toFixed(2)}</span>
+    </div>
+  `;
+
+  cont.appendChild(card);
+});
 
 }
 function mostrarToast(msg, tipo="ok"){
