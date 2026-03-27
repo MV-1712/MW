@@ -162,7 +162,14 @@ display:none;
   
   
 }
+.tag{
+  z-index: 2;
+}
 
+.card img{
+  position: relative;
+  z-index: 1;
+}
 
 .card h3{
   margin:12px 10px 6px; /* 🔥 más abajo */
@@ -259,12 +266,7 @@ display:none;
   font-size: 14px;
 }
 
-.descuento-porcentaje {
-  color: #28a745; /* verde */
-  font-weight: bold;
-  font-size: 14px;
-  margin-bottom: 4px;
-}
+
 .menu {
   display: flex;
   align-items: center;
@@ -1187,11 +1189,11 @@ if(tieneDescuento){
 }
 
 card.innerHTML = `
-  ${tieneDescuento ? `<div class="tag">🔥 HOT</div>` : ""}
+${tieneDescuento ? `<div class="tag">🔥 ${descuentoPorcentaje}% dscto</div>` : ""}
   <img src="${p.Imagen}">
   <h3>${p.Nombre}</h3>
   <div class="precio-container" style="display:flex; flex-direction:column; gap:4px;">
-    ${tieneDescuento ? `<span class="descuento-porcentaje">-${descuentoPorcentaje}%</span>` : ""}
+  
     <div style="display:flex; align-items:center; gap:8px;">
   <span class="${tieneDescuento ? 'precio-nuevo-rojo' : 'precio-normal-negro'}">$${precioNuevo.toFixed(2)}</span>
   ${precioAntiguo > precioNuevo ? `<span class="precio-antiguo-tachado">$${precioAntiguo.toFixed(2)}</span>` : ""}
