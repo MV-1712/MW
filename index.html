@@ -504,13 +504,14 @@ box-shadow:0 4px 10px rgba(0,0,0,0.3);
   font-size:22px;
   cursor:pointer;
   flex:0;
-  color:black; /* 🔥 ESTO LO ARREGLA */
-  margin-left:10px; /* 🔥 separa de la pared */
+  color:black;
+  margin-left:10px;
 }
 .icons-right{
   font-size:18px;
   cursor:pointer;
-  flex:0; /* 🔥 no crece */
+  flex:0;
+  margin-right:10px;
 }
 
 
@@ -595,15 +596,35 @@ box-shadow:0 4px 10px rgba(0,0,0,0.3);
 .menu-lateral{
   position:fixed;
   top:0;
-  
+  left:0;
+
   width:260px;
-  height:100%;
+  height:100vh;
+
   background:white;
   box-shadow:2px 0 10px rgba(0,0,0,0.2);
+
   padding:20px;
+
   transform:translateX(-100%);
   transition:0.3s;
+
   z-index:2000;
+
+  /* 🔥 Permitir desplazamiento vertical */
+  overflow-y:auto;
+  overflow-x:hidden;
+
+  /* 🔥 Ocultar la barra de scroll */
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+
+  /* 🔥 Mejor desplazamiento en celular */
+  -webkit-overflow-scrolling:touch;
+}
+
+.menu-lateral::-webkit-scrollbar{
+  display:none;
 }
 
 /* activo */
