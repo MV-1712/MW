@@ -8,15 +8,19 @@
 
     <style>
     .topbar{
-    background:rgb(14, 13, 13);
-    color:rgb(255, 255, 255);
-    height:40px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:bold;
-    border-bottom:1px solid #ddd;
-    }
+  background:rgb(14,13,13);
+  color:white;
+  height:30px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  border-bottom:1px solid #ddd;
+  position:sticky;
+  top:0;
+  z-index:1000;
+  font-size:12px;
+}
        .modal{
   position:fixed;
   inset:0;
@@ -55,13 +59,12 @@ padding:20px;
 
 .menu{
   display:flex;
-  gap:20px;
+  align-items:center;
+  gap:10px;
   overflow-x:auto;
   white-space:nowrap;
   scroll-behavior:smooth;
   -webkit-overflow-scrolling:touch;
-
-  
   background:white;
   padding:4px 10px;
 }
@@ -112,11 +115,12 @@ display:none;
   flex:0 0 auto;  /* 🔥 evita que se deformen */
   cursor:pointer;
 }
-    body{
-    font-family:Arial;
-    margin:0;
-    background:#f4f4f4;
-    }
+   body{
+  font-family:Arial;
+  margin:0;
+  padding:0;
+  background:#f4f4f4;
+}
 
     .header{
     background:#111;
@@ -144,15 +148,16 @@ display:none;
   gap:10px; /* menos espacio entre productos */
   padding:10px; /* menos espacio a los lados */
 }
-    .card{
+.card{
   background:white;
-  border-radius:10px;
+  border-radius:8px;
   overflow:hidden;
   box-shadow:0 4px 10px rgba(0,0,0,0.1);
   padding-bottom:10px;
-
   display:flex;
   flex-direction:column;
+  cursor:pointer;
+  position:relative;
 }
 
 .card img{
@@ -220,29 +225,7 @@ display:none;
     .agotado{
     opacity:0.5;
     }
-    .card{
-  cursor:pointer;
-}
-.card button{
-  pointer-events:auto;
-}
 
-.precio {
-  display: flex;
-  flex-direction: column; /* para que precio antiguo quede arriba */
-  align-items: flex-start;
-  gap: 2px;
-}
-.precio-antiguo {
-  text-decoration: line-through;
-  color: #999;
-  font-size: 13px;
-}
-.precio-nuevo {
-  color: #e60023; /* rojo */
-  font-weight: bold;
-  font-size: 16px;
-}
 .precio-container {
   display: flex;
   align-items: center;
@@ -265,15 +248,10 @@ display:none;
   text-decoration: line-through;
   color: #999;
   font-size: 14px;
-}
+} 
 
 
-.menu {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 4px 10px;
-}
+
 
 .logo-wrapper {
   flex: 0 0 auto;  /* 🔥 logo no se mueve */
@@ -361,8 +339,8 @@ font-weight:bold;
 
   z-index: 9998; /* 🔥 CLAVE */
 }
-   .ws-btn{
-  background:#111; /* negro elegante */
+.ws-btn{
+  background:#111;
   color:white;
   padding:14px 20px;
   border:none;
@@ -372,6 +350,8 @@ font-weight:bold;
   width:100%;
   font-size:16px;
   transition:all 0.2s ease;
+  position:relative;
+  z-index:10;
 }
 
 /* hover fino */
@@ -429,11 +409,7 @@ box-shadow:0 4px 10px rgba(0,0,0,0.3);
   z-index: 1;
 }
 
-.ws-btn{
-  position: relative;
-  z-index: 10;
-  cursor: pointer;
-}
+
 #toast{
   pointer-events: none;
 }
@@ -442,13 +418,7 @@ box-shadow:0 4px 10px rgba(0,0,0,0.3);
   font-size:12px;
   color:#555;
 }
-.topbar{
-  position:sticky;
-  top:0;
-  z-index:1000;
-  height:30px; /* 🔥 antes 40 */
-  font-size:12px;
-}
+
 .rating{
   margin:0 10px 5px;
   font-size:13px;
@@ -461,11 +431,7 @@ box-shadow:0 4px 10px rgba(0,0,0,0.3);
 }
 
 
-.submenu{
 
-  background:white;
-  padding:6px 10px;
-}
 .header-sticky{
   position: sticky;
   top: 30px; /* debajo del topbar */
@@ -517,7 +483,8 @@ box-shadow:0 4px 10px rgba(0,0,0,0.3);
 
 
 .search-bar{
-  flex:1; /* 🔥 OCUPA TODO EL ESPACIO */
+  flex:1;
+  min-width:0;
   display:flex;
   align-items:center;
   background:#f5f5f5;
@@ -549,10 +516,7 @@ box-shadow:0 4px 10px rgba(0,0,0,0.3);
   filter: invert(1); /* 🔥 blanco si tu icono es negro */
 }
 
-.icons-right{
-  font-size:18px;
-  cursor:pointer;
-}
+
 #carritoCantidad{
   background:red;
   color:white;
@@ -571,10 +535,6 @@ box-shadow:0 4px 10px rgba(0,0,0,0.3);
   outline:none;
   width:100%;
   font-size:14px;
-}
-.search-bar{
-  flex:1;
-  min-width:0; /* 🔥 evita que se rompa */
 }
 .overlay{
   position:fixed;
@@ -647,14 +607,7 @@ box-sizing:border-box;
   font-size:12px;
   margin-left:4px;
 }
-body{
-  margin:0;
-  padding:0;
-}
-.card{
-  border-radius:8px;
-   position:relative;
-}
+
 .modal-header {
   display: flex;
   align-items: center;
@@ -752,15 +705,215 @@ body{
 }
 
 
-    @media (max-width: 768px){
+@media (max-width: 768px){
 
   .grid{
-    grid-template-columns:repeat(2,1fr); /* 2 productos */
-    gap:8px; /* 🔥 más pegados */
-    padding:1px; /* 🔥 menos margen lateral */
+    grid-template-columns:repeat(2,1fr);
+    gap:8px;
+    padding:1px;
+  }
+
+  body.modal-abierto{
+    overflow:hidden;
+    touch-action:none;
   }
 
 }
+
+
+/* =========================================================
+   FOOTER VISIONARY
+   ========================================================= */
+
+.footer-visionary{
+  background:#111;
+  color:white;
+  margin-top:40px;
+  padding:40px 25px 20px;
+}
+
+.footer-contenido{
+  max-width:1100px;
+  margin:auto;
+  display:grid;
+  grid-template-columns:1.5fr 1fr 1fr 1fr;
+  gap:35px;
+}
+
+.footer-col h3{
+  margin:0 0 15px;
+  font-size:18px;
+}
+
+.footer-col h4{
+  margin:0 0 15px;
+  font-size:14px;
+  color:#fff;
+}
+
+.footer-col p{
+  color:#bbb;
+  font-size:13px;
+  line-height:1.6;
+  margin:5px 0;
+}
+
+.footer-link{
+  display:block;
+  color:#bbb;
+  text-decoration:none;
+  font-size:13px;
+  margin:10px 0;
+  cursor:pointer;
+  transition:all .2s ease;
+}
+
+.footer-link:hover{
+  color:white;
+  transform:translateX(3px);
+}
+
+.footer-logo{
+  height:42px;
+  margin-bottom:12px;
+  filter:brightness(0) invert(1);
+}
+
+.footer-redes{
+  display:flex;
+  gap:15px;
+  margin-top:15px;
+}
+
+.footer-redes a{
+  color:white;
+  text-decoration:none;
+  font-size:13px;
+}
+
+.footer-redes a:hover{
+  opacity:.7;
+}
+
+.footer-bottom{
+  max-width:1100px;
+  margin:30px auto 0;
+  padding-top:18px;
+  border-top:1px solid #333;
+  text-align:center;
+  color:#888;
+  font-size:12px;
+}
+
+
+/* =========================================================
+   MODAL INFORMACIÓN
+   ========================================================= */
+
+.info-modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.65);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:10000;
+  padding:15px;
+  box-sizing:border-box;
+}
+
+.info-modal.active{
+  display:flex;
+}
+
+.info-modal-content{
+  position:relative;
+  background:white;
+  color:#111;
+  width:95%;
+  max-width:650px;
+  max-height:85vh;
+  overflow-y:auto;
+  border-radius:12px;
+  padding:30px;
+  box-sizing:border-box;
+}
+
+.info-modal-content h2{
+  margin-top:0;
+  font-size:22px;
+}
+
+.info-modal-content h3{
+  margin-top:25px;
+  font-size:16px;
+}
+
+.info-modal-content p{
+  color:#444;
+  font-size:14px;
+  line-height:1.7;
+}
+
+.cerrar-info{
+  position:absolute;
+  top:12px;
+  right:18px;
+  font-size:22px;
+  font-weight:bold;
+  cursor:pointer;
+  color:#111;
+}
+
+.cerrar-info:hover{
+  opacity:.6;
+}
+
+
+/* =========================================================
+   FOOTER EN CELULAR
+   ========================================================= */
+
+@media(max-width:768px){
+
+  .footer-visionary{
+    padding:35px 20px 20px;
+  }
+
+  .footer-contenido{
+    grid-template-columns:1fr 1fr;
+    gap:25px 20px;
+  }
+
+  .footer-col:first-child{
+    grid-column:1 / -1;
+  }
+
+  .info-modal-content{
+    padding:25px 20px;
+    max-height:90vh;
+  }
+
+}
+
+@media(max-width:450px){
+
+  .footer-contenido{
+    grid-template-columns:1fr;
+  }
+
+  .footer-col:first-child{
+    grid-column:auto;
+  }
+
+}
+
+  .info-modal-content{
+    padding:25px 20px;
+    max-height:90vh;
+  }
+
+
     </style>
 
     </head>
@@ -827,6 +980,123 @@ body{
 
     </div>
     <div class="grid" id="catalogo"></div>
+    <!-- =========================================================
+     FOOTER VISIONARY
+     ========================================================= -->
+
+<footer class="footer-visionary">
+
+  <div class="footer-contenido">
+
+    <!-- SOBRE VISIONARY -->
+    <div class="footer-col">
+
+      <img 
+        src="imagenes/logo sin fondo.png" 
+        class="footer-logo"
+        alt="VISIONARY"
+      >
+
+      <p>
+        VISIONARY es una tienda enfocada en prendas y tecnología,
+        creada para ofrecer productos modernos, prácticos y
+        accesibles.
+      </p>
+
+      <p>
+        Grandes planes y tú en cada uno.
+      </p>
+
+      <div class="footer-redes">
+        <a href="https://www.instagram.com/miguell_1712/" target="_blank">
+          Instagram
+        </a>
+
+        <a href="https://www.facebook.com/josemiguel.betancourt.754703?locale=es_LA" target="_blank">
+          Facebook
+        </a>
+
+        <a href="https://www.tiktok.com/@miguelll.1712" target="_blank">
+          TikTok
+        </a>
+      </div>
+
+    </div>
+
+
+    <!-- INFORMACIÓN -->
+    <div class="footer-col">
+
+      <h4>INFORMACIÓN</h4>
+
+      <span class="footer-link" onclick="abrirInfo('acerca')">
+        Acerca de VISIONARY
+      </span>
+
+      <span class="footer-link" onclick="abrirInfo('terminos')">
+        Términos y condiciones
+      </span>
+
+      <span class="footer-link" onclick="abrirInfo('privacidad')">
+        Política de privacidad
+      </span>
+
+    </div>
+
+
+    <!-- COMPRAS -->
+    <div class="footer-col">
+
+      <h4>COMPRAS</h4>
+
+      <span class="footer-link" onclick="abrirInfo('envios')">
+        Envíos
+      </span>
+
+      <span class="footer-link" onclick="abrirInfo('cambios')">
+        Cambios y devoluciones
+      </span>
+
+      <span class="footer-link" onclick="abrirInfo('pagos')">
+        Métodos de pago
+      </span>
+
+    </div>
+
+
+    <!-- CONTACTO -->
+    <div class="footer-col">
+
+      <h4>CONTACTO</h4>
+
+      <span class="footer-link" onclick="abrirInfo('ubicacion')">
+        📍 Ubicación
+      </span>
+
+      <a 
+        class="footer-link"
+        href="https://wa.me/593999131523"
+        target="_blank"
+      >
+        💬 WhatsApp
+      </a>
+
+      <span class="footer-link" onclick="abrirInfo('horarios')">
+        🕐 Horarios de atención
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <div class="footer-bottom">
+
+    © 2026 VISIONARY — Todos los derechos reservados.
+
+  </div>
+
+</footer>
 
 
 </div>
@@ -901,6 +1171,213 @@ body{
       Finalizar compra por WhatsApp
     </button>
   </div>
+</div>
+<!-- =========================================================
+     MODALES DE INFORMACIÓN
+     ========================================================= -->
+
+<div id="infoModal" class="info-modal">
+
+  <div class="info-modal-content">
+
+    <span class="cerrar-info" onclick="cerrarInfo()">✕</span>
+
+    <!-- ACERCA DE -->
+    <div id="info-acerca" class="info-contenido">
+
+      <h2>Acerca de VISIONARY</h2>
+
+      <p>
+        VISIONARY nace como un proyecto enfocado en crear una tienda
+        moderna y sencilla, donde las personas puedan encontrar
+        prendas y productos de tecnología en un solo lugar.
+      </p>
+
+      <p>
+        Nuestra idea es ofrecer una experiencia de compra fácil,
+        rápida y clara, con productos seleccionados y atención
+        directa.
+      </p>
+
+      <p>
+        VISIONARY — prendas y tecnología.
+      </p>
+
+    </div>
+
+
+    <!-- TÉRMINOS -->
+    <div id="info-terminos" class="info-contenido">
+
+      <h2>Términos y condiciones</h2>
+
+      <p>
+        Al realizar una compra en VISIONARY, el cliente acepta los
+        términos y condiciones establecidos para la adquisición de
+        nuestros productos.
+      </p>
+
+      <h3>Productos</h3>
+
+      <p>
+        Las imágenes utilizadas son de referencia y pueden presentar
+        pequeñas diferencias respecto al producto físico.
+      </p>
+
+      <h3>Precios</h3>
+
+      <p>
+        Los precios publicados corresponden a los valores disponibles
+        al momento de realizar la consulta o compra.
+      </p>
+
+      <h3>Disponibilidad</h3>
+
+      <p>
+        La disponibilidad de los productos depende del stock existente.
+      </p>
+
+    </div>
+
+
+    <!-- PRIVACIDAD -->
+    <div id="info-privacidad" class="info-contenido">
+
+      <h2>Política de privacidad</h2>
+
+      <p>
+        En VISIONARY respetamos la información proporcionada por
+        nuestros clientes.
+      </p>
+
+      <p>
+        Los datos necesarios para procesar una compra o coordinar
+        una entrega serán utilizados únicamente para brindar el
+        servicio solicitado.
+      </p>
+
+      <p>
+        No compartimos información personal de nuestros clientes
+        con terceros con fines comerciales.
+      </p>
+
+    </div>
+
+
+    <!-- ENVÍOS -->
+    <div id="info-envios" class="info-contenido">
+
+      <h2>Envíos</h2>
+
+      <p>
+        Realizamos envíos de acuerdo con la ubicación del cliente y
+        la disponibilidad del servicio de entrega.
+      </p>
+
+      <h3>Envíos gratis</h3>
+
+      <p>
+        Las promociones de envío gratis estarán indicadas directamente
+        en la página cuando se encuentren disponibles.
+      </p>
+
+      <p>
+        Antes de confirmar la compra se podrá consultar el valor y
+        las condiciones del envío.
+      </p>
+
+    </div>
+
+
+    <!-- CAMBIOS -->
+    <div id="info-cambios" class="info-contenido">
+
+      <h2>Cambios y devoluciones</h2>
+
+      <p>
+        Para solicitar un cambio o devolución, el cliente deberá
+        comunicarse con VISIONARY antes de realizar el envío del
+        producto.
+      </p>
+
+      <p>
+        Los productos deberán conservarse en condiciones adecuadas
+        y cumplir con las condiciones establecidas para cada caso.
+      </p>
+
+      <p>
+        Cada solicitud será revisada individualmente para determinar
+        si aplica el cambio o devolución.
+      </p>
+
+    </div>
+
+
+    <!-- PAGOS -->
+    <div id="info-pagos" class="info-contenido">
+
+      <h2>Métodos de pago</h2>
+
+      <p>
+        Los métodos de pago disponibles pueden variar dependiendo
+        del producto y de la ubicación del cliente.
+      </p>
+
+      <p>
+        Antes de finalizar la compra se confirmará con el cliente
+        el método de pago disponible.
+      </p>
+
+    </div>
+
+
+    <!-- UBICACIÓN -->
+    <div id="info-ubicacion" class="info-contenido">
+
+      <h2>Ubicación</h2>
+
+      <p>
+        Nuestra ubicación y los puntos disponibles para entrega o
+        retiro serán proporcionados directamente al momento de
+        coordinar la compra.
+      </p>
+
+      <p>
+        Para conocer nuestra ubicación actual puedes comunicarte
+        directamente con nosotros por WhatsApp.
+      </p>
+
+      <a
+        href="https://wa.me/593999131523"
+        target="_blank"
+        class="ws-btn"
+        style="display:block;text-align:center;text-decoration:none;box-sizing:border-box;margin-top:20px;"
+      >
+        Contactar por WhatsApp
+      </a>
+
+    </div>
+
+
+    <!-- HORARIOS -->
+    <div id="info-horarios" class="info-contenido">
+
+      <h2>Horarios de atención</h2>
+
+      <p>
+        Nuestro horario de atención puede variar según el día.
+      </p>
+
+      <p>
+        Para confirmar disponibilidad, productos, precios o
+        coordinar una compra, puedes escribirnos directamente
+        por WhatsApp.
+      </p>
+
+    </div>
+
+  </div>
+
 </div>
 
     <script>
@@ -1454,9 +1931,6 @@ document.getElementById("mPrecio").innerHTML = `
 `;
     document.getElementById("mDescripcion").innerText = producto.Descripcion;
 
-  
-    document.getElementById("mDescripcion").innerText=producto.Descripcion;
-
     const vars=variantes.filter(v=>v.ProductoID===id);
 
     /* COLORES */
@@ -1646,9 +2120,6 @@ if(tipo === "error"){
   },2000);
 }
 
-let textosBusqueda = [];
-let indexBusqueda = 0;
-
 function iniciarBuscador() {
   const input = document.getElementById("inputBusqueda");
 
@@ -1696,18 +2167,7 @@ window.addEventListener("scroll", ()=>{
   }
 
 });
-/* 🔥 BUSCADOR EN TIEMPO REAL */
-document.getElementById("inputBusqueda").addEventListener("input", function(){
 
-  const valor = this.value.toLowerCase();
-
-  const filtrados = productos.filter(p =>
-    p.Nombre.toLowerCase().includes(valor)
-  );
-
-  renderCatalogoFiltrado(filtrados);
-
-});
 document.querySelectorAll(".modal-content").forEach(el => {
   el.addEventListener("click", function(e){
     e.stopPropagation();
@@ -1718,6 +2178,50 @@ document.getElementById("modal").addEventListener("click", function(e){
   if(e.target === this){
     cerrarModal();
   }
+});
+/* =========================================================
+   MODALES DEL FOOTER
+   ========================================================= */
+
+function abrirInfo(seccion){
+
+  const modal = document.getElementById("infoModal");
+
+  // Ocultar todas las secciones
+  document.querySelectorAll(".info-contenido").forEach(el => {
+    el.style.display = "none";
+  });
+
+  // Mostrar la sección seleccionada
+  const contenido = document.getElementById("info-" + seccion);
+
+  if(contenido){
+    contenido.style.display = "block";
+  }
+
+  modal.classList.add("active");
+
+  // Bloquear scroll del catálogo
+  document.body.classList.add("modal-abierto");
+}
+
+
+function cerrarInfo(){
+
+  document.getElementById("infoModal").classList.remove("active");
+
+  document.body.classList.remove("modal-abierto");
+
+}
+
+
+// Cerrar haciendo clic fuera de la ventana
+document.getElementById("infoModal").addEventListener("click", function(e){
+
+  if(e.target === this){
+    cerrarInfo();
+  }
+
 });
 
 
